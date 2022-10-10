@@ -1,0 +1,117 @@
+// INFO ************************************************************************
+// FileName : 00_mylvsample.hsp
+// Date     : 2022/10/10
+// Author   : YUZURANIUM（ゆずらにうむ）
+// URL      : https://twitter.com/YUZRANIUM
+//******************************************************************************
+
+// SQLele(SQLite)との併用を前提に個人で作ったものに手を加えて配布しています。
+//
+// *用語*
+//
+// アイテム	: 個々の値、フィールド、Excelで言うところの一つのセル
+// カラム	: 個々の値を分類するときの、その特徴や種類、属性
+// レコード	: データそのもの
+// テーブル	: Excelで言うところのシート、表
+//******************************************************************************
+
+	#include "user32.as"	// 必ずuser32.asをインクルードしてください
+	#include "sqlele.hsp"	//なくても使えますがmyindata命令は利用できなくなります
+	#include "common/00_mylv.hsp"
+
+	#enum WIN_ID = 0
+
+	sdim cpu, 2048		// 全アイテム格納用
+	sdim col_clis, 64	// カラムリスト格納用
+	dim rec_cnum		// レコードの数
+	dim col_cnum		// カラムの数
+
+	swc = 1								//昇降順切り替え
+	col_cw = 50, 50, 80, 60, 60, 60		//各カラムの幅
+	db = "Syouhin.db"
+
+	sql_open db
+		sql_q "BEGIN;"
+
+
+		sql_q "SELECT * FROM MyCPU;"
+			rec_cnum = stat					//レコードの数
+			col_cnum = length(tmparr)		//カラムの数
+			col_clis = sql_collist()		//カラムリスト
+			split col_clis, ",", col_clis	//カラムリストを配列変数に
+
+			//全アイテムを文字列型配列として変数cpuに格納
+			myindata rec_cnum, col_cnum, col_clis, cpu		//sqLeleインクルード時のみ利用可
+
+		sql_q "COMMIT;"
+	sql_close
+
+
+	screen WIN_ID, 750, 500
+
+		button gosub "GetItem", *getitem					//レコード取得用
+
+		mes "↑レコード選択後に\nボタンを押すと\nそのレコード一覧が\nダイアログされます"
+		pos 230, 0    :  mes "カラム↓IDやRealityをクリックすると昇順･降順切り替わります"
+		pos 35, 150  :  mes "各行がレコード → \n\n複数選択にも\n対応しています"
+
+		pos 200, 30
+		mycrelv 400, 430, id_LVcpu, hLVcpu					//リストビュー設置
+			myincol id_LVcpu, col_clis, col_cnum, col_cw	//カラムの追加
+			myinitem id_LVcpu, cpu, rec_cnum, col_cnum		//全アイテム追加
+
+	oncmd gosub *notify, WM_NOTIFY				//リストビューの並び替え
+
+	stop
+
+
+/***レコードの取得***/
+*getitem
+	gsel WIN_ID
+
+	sdim getlist, 1024
+
+	//※注意リストビューからフォーカス外しても前回の選択状態を維持しています
+	mygetitem id_LVcpu, col_cnum, getlist
+
+	dialog getlist, 0, "GetItem"
+
+	return
+
+
+/***リストビューの昇降順***/
+*notify
+
+	dupptr nmhdr, lparam, 12, 4
+	hLV = nmhdr(0)		// リストビューのオブジェクトハンドル
+
+	if (nmhdr(2) = LVN_COLUMNCLICK) {
+
+		dupptr nmlv, lparam, 40, 4
+		index = nmlv(4)		//クリックされたカラムのインデックス
+
+		gsel WIN_ID
+
+		sql_open db
+			sql_q "BEGIN;"
+
+			switch hLV
+				case hLVcpu
+					sdim cpu, 2048
+
+					swc = swc * -1
+					if swc == -1 : sqsc = " DESC;"   :   else : sqsc = " ASC;"	//DESC : 降順 / ASC : 昇順
+
+					sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + sqsc
+						col_clis = sql_collist()   :   split col_clis, ",", col_clis
+						myindata rec_cnum, col_cnum, col_clis, cpu
+
+					mydelitem id_LVcpu	//現在のリストビューの全レコードを削除
+					myinitem id_LVcpu, cpu, rec_cnum, col_cnum
+
+					swbreak
+			swend
+			sql_q "COMMIT;"
+		sql_close
+	}
+	return
