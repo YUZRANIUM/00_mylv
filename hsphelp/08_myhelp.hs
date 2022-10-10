@@ -1,7 +1,7 @@
 ;
 ;	00_mylv.hsp用 HELPソースファイル
-;	制作日	: 2022/10/07
-;	製作者	: ゆずらにうむ
+;	制作日	: 2022/10/10
+;	製作者	: YUZURANIUM（ゆずらにうむ）
 ;	Twitter	: https://twitter.com/YUZRANIUM
 
 %date
@@ -10,6 +10,7 @@
 YUZURANIUM(ゆずらにうむ)
 %url
 https://twitter.com/YUZRANIUM
+HSPの裏技??http://chokuto.ifdef.jp/urawaza/index.html
 %dll
 00_mylv
 %type
@@ -61,9 +62,10 @@ p3 : オブジェクトIDを受け取る変数
 p4 : オブジェクトハンドルを受け取る変数
 
 %inst
-p1,p2で指定した大きさのリストビューを設置する命令です。
+この命令はリストビューをカレントポジションに設置するものです。
+p1,p2でリストビューのXサイズ、Yサイズを指定します。
 p3とp4はご自身で整数型変数を用意する必要があります。
-この命令はリストビューの設置準備をするだけです。
+オブジェクトIDは後の命令で、オブジェクトハンドルはリストビューのレコードの並べ替えに必要です。
 この後に列（カラム）を設置する命令とアイテムを設置する命令を行う必要があります。
 
 %sample
@@ -79,7 +81,7 @@ sql_open db
 
 		split col_clis, ",", col_clis	//カラムのリストを配列変数に
 
-	myindata rec_cnum, col_cnum, col_clis, cpu　	//データのインプット
+	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
 
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
@@ -222,7 +224,7 @@ p1 : 設置したリストビューのオブジェクトハンドル
 p2 : カラムを格納した配列変数
 p3 : カラムの数
 p4 : カラムの幅を格納した配列変数
-p5(0) : スタイル 
+p5(0) : スタイル
 
 %inst
 p1で指定したリストビューにカラムを設置します。
@@ -248,7 +250,7 @@ sql_open db
 
 		split col_clis, ",", col_clis	//カラムのリストを配列変数に
 
-	myindata rec_cnum, col_cnum, col_clis, cpu　	//データのインプット
+	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
 
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
@@ -317,7 +319,7 @@ sql_open db
 
 		split col_clis, ",", col_clis	//カラムのリストを配列変数に
 
-	myindata rec_cnum, col_cnum, col_clis, cpu　	//データのインプット
+	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
 
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
@@ -383,7 +385,7 @@ sql_open db
 
 		split col_clis, ",", col_clis	//カラムのリストを配列変数に
 
-	myindata rec_cnum, col_cnum, col_clis, cpu　	//データのインプット
+	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
 
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
@@ -490,5 +492,3 @@ hwnd
 SetParent
 %note
 user32.asをインクルードすること
-
-

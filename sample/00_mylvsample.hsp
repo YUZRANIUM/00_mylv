@@ -17,7 +17,7 @@
 
 	#include "user32.as"	// 必ずuser32.asをインクルードしてください
 	#include "sqlele.hsp"	//なくても使えますがmyindata命令は利用できなくなります
-	#include "00_mylv.hsp"
+	#include "common/00_mylv.hsp"
 
 	#enum WIN_ID = 0
 
@@ -70,7 +70,9 @@
 	gsel WIN_ID
 
 	sdim getlist, 1024
-	mygetitem id_LVcpu, col_cnum, getlist		//オブジェクトからフォーカス外してもレコードは選択状態を維持しています
+
+	//※注意リストビューからフォーカス外しても前回の選択状態を維持しています
+	mygetitem id_LVcpu, col_cnum, getlist
 
 	dialog getlist, 0, "GetItem"
 
