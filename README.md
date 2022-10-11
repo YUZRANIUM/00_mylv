@@ -2,12 +2,10 @@
 
 * ### たった3行でリストビューを設置できます()
 
+	![mylv2022101102](https://user-images.githubusercontent.com/83401251/195083576-ff66d6e6-fc37-4ec7-a913-543aa6f75d3b.png)<br><br>　サンプル 00_mylvsample.hsp より | ![mylv20221011](https://user-images.githubusercontent.com/83401251/195083006-a499adee-a00d-4e33-9066-2b5a7e2ef537.png)
+	---: | ---
 
-	| --- | --- |
-
-今後、アップデートが不定期で行われる予定です。
-
-右上のCode（緑色）から、zipをダウンロードしてどうぞ
+今後、アップデートが不定期で行われる予定です。右上のCode（緑色）から、zipをダウンロードしてどうぞ
 
 ## 概要
 
@@ -17,19 +15,60 @@ CSV や SQL などのデータを文字列型の1次元配列変数に変換す�
 
 また、HSP の SQLite 支援モジュールである SQLele を利用する場合は、専用のマクロ形式の変換命令である myindata命令 を利用することで比較的簡単にリストビューを設置することができます。
 
-リストビューの設置には#include "user32.as" をインクルードすることが必要です。
+リストビューの設置には `#include "user32.as"` をインクルードすることが必要です。
 
 ## 特徴
-* ### 用意しなければならない変数一覧
-	~~~ hsp
-	sdim cpu, 2048		// 全アイテム格納用
-	sdim col_clis, 64	// カラムリスト格納用
-	dim rec_cnum		// レコードの数
-	dim col_cnum		// カラムの数
 
-	col_cw = 50, 50, 80, 60, 60, 60		//各カラムの幅
-	swc = 1								//昇降順切り替え
-	~~~
+<details>
+<summary>追加される命令一覧</summary>
+
+~~~ java
+//SQLのデータを文字列型1次元配列変数に変換･出力
+myindata rec_num, col_num, col_list, rec_data
+//p1 : レコードの数
+//p2 : カラムの数
+//p3 : カラムを格納した文字列型配列変数
+//p4 : レコードを受け取る文字列型配列変数
+
+//リストビュー設置
+mycrelv X, Y, ObjID, Objhwnd
+//p1,p2 : Xサイズ,Yサイズ
+//p3 : オブジェクトIDを受け取る変数
+//p4 : オブジェクトハンドルを受け取る変数
+
+//リストビューにカラムを追加
+myincol ObjID, col_list, col_num, col_w, (p5 = 0)
+//p1 : リストビューのオブジェクトID
+//p2 : カラムを格納した配列変数
+//p3 : カラムの数
+//p4 : カラムの幅
+//p5(0) : 0=左揃え / 1=右揃え / 2=中央揃え
+
+//リストビューにレコードを追加
+myinitem ObjID, rec_data, rec_num, col_num
+//p1 : リストビューのオブジェクトID
+//p2 : レコードを格納した配列変数
+//p3 : レコードの数
+//p4 : カラムの数
+
+//リストビューのアイテムの文字列取得
+mygetitem ObjID, col_num, gettext
+//p1 : リストビューのオブジェクトID
+//p2 : カラムの数
+//p3 : 取得文字列を格納する文字列型変数
+
+//リストビューアイテムの削除
+mydelitem ObjID
+//p1 : リストビューのオブジェクトID
+~~~
+
+</details>
+
+
+* ### 用意しなければならない変数一覧
+![mylv04](https://user-images.githubusercontent.com/83401251/195087503-a21b35ae-8bbe-4cf2-99f7-1ad34fb70cf7.png)| 　ネストしたrepeat文をマクロ登録しているため、どうしても変数が多くなってしまいます。<br><br>　特にカラムの幅に関しては現状の命令で個別指定できる一方、カラム幅が同じ場合でも左図のように同じ値をいくつも持つ配列変数を用意しなければなりません。<br><br>　同じカラム幅専用のマクロ形式命令を追加する予定です。
+--- | :---
+
 
 * ### SQLite(sqlele)連携によるデータの取得（例）
 	~~~ hsp
@@ -45,7 +84,7 @@ CSV や SQL などのデータを文字列型の1次元配列変数に変換す�
 
 * ### リストビュー設置部分
 	~~~ hsp
-		mycrelv 400, 430, id_LVcpu, hLVcpu				//リストビュー設置
+		mycrelv 400, 430, id_LVcpu, hLVcpu					//リストビュー設置
 			myincol id_LVcpu, col_clis, col_cnum, col_cw	//カラムの追加
 			myinitem id_LVcpu, cpu, rec_cnum, col_cnum		//全アイテム追加
 
