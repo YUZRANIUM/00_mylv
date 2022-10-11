@@ -16,7 +16,7 @@ HSP‚Ì— ‹Z??http://chokuto.ifdef.jp/urawaza/index.html
 %type
 ƒ†[ƒU[’è‹`–½—ß
 %ver
-1.2
+1.3
 %port
 Win
 
@@ -54,20 +54,17 @@ objcolor
 %index
 mycrelv
 ƒŠƒXƒgƒrƒ…[İ’u
-
 %prm
 p1,p2,p3,p4
 p1,p2 : ƒŠƒXƒgƒrƒ…[‚ÌXƒTƒCƒYAYƒTƒCƒY
 p3 : ƒIƒuƒWƒFƒNƒgID‚ğó‚¯æ‚é•Ï”
 p4 : ƒIƒuƒWƒFƒNƒgƒnƒ“ƒhƒ‹‚ğó‚¯æ‚é•Ï”
-
 %inst
 ‚±‚Ì–½—ß‚ÍƒŠƒXƒgƒrƒ…[‚ğƒJƒŒƒ“ƒgƒ|ƒWƒVƒ‡ƒ“‚Éİ’u‚·‚é‚à‚Ì‚Å‚·B
 p1,p2‚ÅƒŠƒXƒgƒrƒ…[‚ÌXƒTƒCƒYAYƒTƒCƒY‚ğw’è‚µ‚Ü‚·B
 p3‚Æp4‚Í‚²©g‚Å®”Œ^•Ï”‚ğ—pˆÓ‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B
 ƒIƒuƒWƒFƒNƒgID‚ÍŒã‚Ì–½—ß‚ÅAƒIƒuƒWƒFƒNƒgƒnƒ“ƒhƒ‹‚ÍƒŠƒXƒgƒrƒ…[‚ÌƒŒƒR[ƒh‚Ì•À‚×‘Ö‚¦‚É•K—v‚Å‚·B
 ‚±‚ÌŒã‚É—ñiƒJƒ‰ƒ€j‚ğİ’u‚·‚é–½—ß‚ÆƒAƒCƒeƒ€‚ğİ’u‚·‚é–½—ß‚ğs‚¤•K—v‚ª‚ ‚è‚Ü‚·B
-
 %sample
 ...
 sql_open db
@@ -85,11 +82,9 @@ sql_open db
 
 	column_w = 60, 60, 110, 85, 80, 80		//ƒJƒ‰ƒ€‚Ì•
 
-
 	mycrelv 550, 280, id_LVcpu, hLVcpu		//ƒŠƒXƒgƒrƒ…[İ’u
 	myincol id_LVcpu, col_clis, col_cnum, column_w	//—ñiƒJƒ‰ƒ€j‚Ìİ’u
 	myinitem id_LVcpu, cpu, rec_cnum, col_cnum	//ƒAƒCƒeƒ€‚Ìİ’u
-
 
 	oncmd gosub *notify, WM_NOTIFY
 %href
@@ -98,20 +93,19 @@ myinitem
 myindata
 mygetitem
 mydelitem
-
 %group
 ƒIƒuƒWƒFƒNƒg§Œä–½—ß
-
 %note
 00_mylv.hsp‚Æuser32.as‚ğƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+
+
+
 %index
 mydelitem
 ƒŠƒXƒgƒrƒ…[‚ÌƒAƒCƒeƒ€‘SÁ‹
-
 %prm
 p1
 p1 : ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
-
 %inst
 w’è‚³‚ê‚½ƒŠƒXƒgƒrƒ…[‚Ì‘SƒAƒCƒeƒ€‚ğíœ‚µ‚Ü‚·B
 ^
@@ -121,7 +115,6 @@ p1 : ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
 #deffunc mydelitem int h1
 	sendmsg objinfo(h1, 2), 0x1009, 0, 0
 	return
-
 %sample
 //ƒŠƒXƒgƒrƒ…[¸~‡‚Ìˆ—
 *notify
@@ -158,30 +151,27 @@ myincol
 myinitem
 myindata
 mygetitem
-
 %group
 ƒIƒuƒWƒFƒNƒg§Œä–½—ß
-
 %note
 00_mylv.hsp‚Æuser32.as‚ğƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+
+
 
 %index
 mygetitem
 ƒŠƒXƒgƒrƒ…[‚ÌƒAƒCƒeƒ€æ“¾
-
 %prm
 p1,p2,p3
 p1 : ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
 p2 : ƒJƒ‰ƒ€‚Ì”
 p3 : æ“¾•¶š—ñ‚ğó‚¯æ‚é”z—ñ•Ï”
-
 %inst
 ‘I‘ğ‚³‚ê‚½ƒŠƒXƒgƒrƒ…[‚ÌƒAƒCƒeƒ€‚ğ•¶š—ñ‚Æ‚µ‚Äæ“¾‚µA”z—ñ•Ï”‚Æ‚µ‚Äo—Í‚·‚é–½—ß‚Å‚·B
 ^
 æ“¾•¶š—ñ‚ğó‚¯æ‚é”z—ñ•Ï”‚Í‚²©g‚Å‚ ‚ç‚©‚¶‚ß—pˆÓ‚µ‚Ä‚¨‚­•K—v‚ª‚ ‚è‚Ü‚·B
 ^
 ‚Ü‚½A•¡”‘I‘ğ‚É‚à‘Î‰‚µ‚Ä‚¢‚é‚½‚ß‹K–Í‚É‚à‚æ‚è‚Ü‚·‚ªAæ“¾•¶š—ñ‚ğó‚¯æ‚é”z—ñ•Ï”‚Í‚»‚Ìƒoƒbƒtƒ@ƒTƒCƒY‚ğ‘å‚«‚ß‚ÉŠm•Û‚µ‚Ä‚­‚¾‚³‚¢B
-
 %sample
 
 //‘I‘ğ‚µ‚½ƒŠƒXƒgƒAƒCƒeƒ€‚Ìæ“¾
@@ -203,7 +193,6 @@ p3 : æ“¾•¶š—ñ‚ğó‚¯æ‚é”z—ñ•Ï”
 	dialog "w“üƒŠƒXƒg" + infotext1 + infotext2 + infotext3, 0, "w“üŠm”F"
 
 	return
-
 %href
 mycrelv
 myincol
@@ -214,10 +203,12 @@ mydelitem
 ƒIƒuƒWƒFƒNƒg§Œä–½—ß
 %note
 00_mylv.hsp‚ğƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+
+
+
 %index
 myincol
-ƒŠƒXƒgƒrƒ…[‚É—ñiƒJƒ‰ƒ€j’Ç‰Á
-
+ƒŠƒXƒgƒrƒ…[‚ÉƒJƒ‰ƒ€‚ğŒÂ•Êw’è‚Å’Ç‰Á
 %prm
 p1,p2,p3,p4,p5
 p1 : İ’u‚µ‚½ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgƒnƒ“ƒhƒ‹
@@ -225,8 +216,9 @@ p2 : ƒJƒ‰ƒ€‚ğŠi”[‚µ‚½”z—ñ•Ï”
 p3 : ƒJƒ‰ƒ€‚Ì”
 p4 : ƒJƒ‰ƒ€‚Ì•‚ğŠi”[‚µ‚½”z—ñ•Ï”
 p5(0) : ƒXƒ^ƒCƒ‹
-
 %inst
+‚±‚Ì–½—ß‚ÍAƒJƒ‰ƒ€•‚ğŒÂ•Êw’è‚µ‚ÄƒŠƒXƒgƒrƒ…[‚ğİ’u‚·‚é‚à‚Ì‚Å‚·B
+^
 p1‚Åw’è‚µ‚½ƒŠƒXƒgƒrƒ…[‚ÉƒJƒ‰ƒ€‚ğİ’u‚µ‚Ü‚·B
 p2‚Í•¶š—ñŒ^Ap4‚Í®”Œ^‚Ì1ŸŒ³”z—ñ•Ï”‚Å‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
 p5‚Í¶‘µ‚¦A‰E‘µ‚¦A’†‰›‘µ‚¦‚ğw’è‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·BÈ—ª‚Í¶‘µ‚¦‚Æ‚È‚è‚Ü‚·B
@@ -236,7 +228,9 @@ p5‚Í¶‘µ‚¦A‰E‘µ‚¦A’†‰›‘µ‚¦‚ğw’è‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·BÈ—ª‚Í¶‘µ‚¦‚Æ‚È‚è‚Ü‚·B
 	0	:	¶‘µ‚¦
 	1	:	‰E‘µ‚¦
 	2	:	’†‰›‘µ‚¦
-
+^
+‚±‚Ì–½—ß‚ÍAƒJƒ‰ƒ€‚Ì”‚ª­‚È‚­AŠeƒAƒCƒeƒ€•‚Ì·‚ª‘å‚«‚¢ê‡‚É—LŒø‚Å‚·B
+^
 %sample
 ...
 sql_open db
@@ -267,24 +261,87 @@ myinitem
 myindata
 mygetitem
 mydelitem
-
-
 %group
 ƒIƒuƒWƒFƒNƒg§Œä–½—ß
-
 %note
 00_mylv.hsp‚Æuser32.as‚ğƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+
+
+
+%index
+myincol2
+ƒŠƒXƒgƒrƒ…[‚ÉƒJƒ‰ƒ€‚ğ“¯ˆêw’è‚Å’Ç‰Á
+%prm
+p1,p2,p3,p4,p5
+p1 : İ’u‚µ‚½ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgƒnƒ“ƒhƒ‹
+p2 : ƒJƒ‰ƒ€‚ğŠi”[‚µ‚½”z—ñ•Ï”
+p3 : ƒJƒ‰ƒ€‚Ì”
+p4(75) : ƒJƒ‰ƒ€‚Ì•(®”’l)
+p5(0) : ƒXƒ^ƒCƒ‹
+%inst
+ƒJƒ‰ƒ€•‚ğŒÂ•Êw’è‚Å‚«‚émyincol–½—ß‚ÌƒfƒƒŠƒbƒg‚ğ•â‚¤‚½‚ß‚Ì‚à‚Ì‚Å‚·B
+^
+p1‚Åw’è‚µ‚½ƒŠƒXƒgƒrƒ…[‚ÉƒJƒ‰ƒ€‚ğİ’u‚µ‚Ü‚·B
+p2‚Í•¶š—ñŒ^‚Ì1ŸŒ³”z—ñ•Ï”‚Å‚È‚¯‚ê‚Î‚È‚è‚Ü‚¹‚ñB
+^
+‚±‚Ì–½—ß‚Íp4‚É®”’l‚ğ’¼Úw’è‚·‚é‚±‚Æ‚ÅƒŠƒXƒgƒrƒ…[‚Ì‘S‚Ä‚ÌƒJƒ‰ƒ€•‚ğ“¯‚¶’l‚É‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+È—ª‰Â”\‚ÅAÈ—ª‚Í75‚Æ‚È‚è‚Ü‚·B
+^
+p5‚Í¶‘µ‚¦A‰E‘µ‚¦A’†‰›‘µ‚¦‚ğw’è‚·‚é‚±‚Æ‚ªo—ˆ‚Ü‚·BÈ—ª‚Í¶‘µ‚¦‚Æ‚È‚è‚Ü‚·B
+	’l	:	“®ì
+	-----------------------
+	0	:	¶‘µ‚¦
+	1	:	‰E‘µ‚¦
+	2	:	’†‰›‘µ‚¦
+^
+‚±‚Ì–½—ß‚ÍAƒJƒ‰ƒ€‚Ì”‚ª‘½‚­AŠeƒAƒCƒeƒ€•‚Ì·‚ª‚Ù‚Æ‚ñ‚Ç‚È‚¢ê‡‚É—LŒø‚Å‚·B
+^
+%sample
+...
+sql_open db
+	sql_q "SELECT * FROM MyCPU;"
+
+		rec_cnum = stat			//ƒŒƒR[ƒh‚Ì”
+
+		col_cnum = length(tmparr)	//ƒJƒ‰ƒ€‚Ì”
+
+		col_clis = sql_collist()	//ƒJƒ‰ƒ€ƒŠƒXƒg
+
+		split col_clis, ",", col_clis	//ƒJƒ‰ƒ€‚ÌƒŠƒXƒg‚ğ”z—ñ•Ï”‚É
+
+	myindata rec_cnum, col_cnum, col_clis, cpu	//ƒf[ƒ^‚ÌƒCƒ“ƒvƒbƒg
+
+	column_w = 60, 60, 110, 85, 80, 80		//ƒJƒ‰ƒ€‚Ì•
+
+
+	mycrelv 550, 280, id_LVcpu, hLVcpu		//ƒŠƒXƒgƒrƒ…[İ’u
+		myincol2 id_LVcpu, col_clis, col_cnum, 75	//ƒJƒ‰ƒ€‚ğ“¯‚¶•‚Åİ’u
+		myinitem id_LVcpu, cpu, rec_cnum, col_cnum	//ƒAƒCƒeƒ€‚Ìİ’u
+
+
+	oncmd gosub *notify, WM_NOTIFY
+%href
+mycrelv
+myinitem
+myindata
+mygetitem
+mydelitem
+%group
+ƒIƒuƒWƒFƒNƒg§Œä–½—ß
+%note
+00_mylv.hsp‚Æuser32.as‚ğƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+
+
+
 %index
 myindata
 SQLele(SQLite)‚©‚çƒf[ƒ^æ“¾
-
 %prm
 p1,p2,p3,p4
 p1 : ƒŒƒR[ƒh‚Ì”
 p2 : ƒJƒ‰ƒ€‚Ì”
 p3 : ƒJƒ‰ƒ€‚ğŠi”[‚µ‚½”z—ñ•Ï”
 p4 : ƒŒƒR[ƒh‚ğó‚¯æ‚é”z—ñ•Ï”
-
 %inst
 •¶š—ñŒ^‚Ì1Ÿ”z—ñ‚ğo—Í‚·‚éƒ}ƒNƒŒ`®‚Ì–½—ß‚Å‚·B
 sqlele.hsp‚ğƒCƒ“ƒNƒ‹[ƒh‚µ‚Ä‚¢‚éê‡‚É‚Ì‚İg‚¤‚±‚Æ‚ª‚Å‚«‚Ü‚·B
@@ -292,7 +349,6 @@ sqlele.hsp‚ğƒCƒ“ƒNƒ‹[ƒh‚µ‚Ä‚¢‚éê‡‚É‚Ì‚İg‚¤‚±‚Æ‚ª‚Å‚«‚Ü‚·B
 sqlele‚Ìsql_q–½—ßŒã‚ÉŠeí”’l‚ğæ“¾‚µ‚Ä‚­‚¾‚³‚¢B‚»‚Ì’l‚ğ‚à‚Æ‚ÉƒŒƒR[ƒh‚ğ•¶š—ñŒ^‚Ì1ŸŒ³”z—ñ•Ï”‚Æ‚µ‚Ä—^‚¦‚ç‚ê‚½•Ï”‚ÉŠi”[‚µ‚Ä‚¢‚«‚Ü‚·B
 ^
 ƒŒƒR[ƒh‚ğó‚¯æ‚é‚½‚ß‚Ì”z—ñ•Ï”‚Í‚²©g‚Å‚ ‚ç‚©‚¶‚ß—pˆÓ‚µ‚Ä‚¨‚­•K—v‚ª‚ ‚è‚Ü‚·B‚Ü‚½A‹K–Í‚É‚à‚æ‚è‚Ü‚·‚ªAƒŒƒR[ƒh‚ğó‚¯æ‚é”z—ñ•Ï”‚Í‚»‚Ìƒoƒbƒtƒ@ƒTƒCƒY‚ğ‘å‚«‚ß‚ÉŠm•Û‚µ‚Ä‚­‚¾‚³‚¢B
-
 
 (Ql)
 #define global myindata(%1,%2,%3,%4)\
@@ -305,7 +361,6 @@ sqlele‚Ìsql_q–½—ßŒã‚ÉŠeí”’l‚ğæ“¾‚µ‚Ä‚­‚¾‚³‚¢B‚»‚Ì’l‚ğ‚à‚Æ‚ÉƒŒƒR[ƒh‚ğ•¶š—ñŒ
 	: sql_next\
 	: loop\
 	: split %4,",",%4
-
 %sample
 ...
 sql_open db
@@ -330,30 +385,28 @@ sql_open db
 
 
 	oncmd gosub *notify, WM_NOTIFY
-
 %href
 mycrelv
 myincol
 myinitem
 mydelitem
 mygetitem
-
 %group
 ƒIƒuƒWƒFƒNƒg§Œä–½—ß
-
 %note
 00_mylv.hsp‚Æsqlele.hsp‚ğƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+
+
+
 %index
 myinitem
 ƒŠƒXƒgƒrƒ…[‚ÉƒAƒCƒeƒ€’Ç‰Á
-
 %prm
 p1,p2,p3,p4
 p1 : İ’u‚µ‚½ƒŠƒXƒgƒrƒ…[‚ÌƒIƒuƒWƒFƒNƒgID
 p2 : ƒAƒCƒeƒ€‚ğŠi”[‚µ‚½”z—ñ•Ï”
 p3 : ƒŒƒR[ƒh‚Ì”
 p4 : ƒJƒ‰ƒ€‚Ì”
-
 %inst
 p2‚ÅƒAƒCƒeƒ€‚ğŠi”[‚µ‚½•¶š—ñŒ^‚Ì1ŸŒ³”z—ñ•Ï”‚ğAp4‚ÅƒJƒ‰ƒ€‚Ì”‚ğ‚»‚ê‚¼‚êw’è‚µ‚Ü‚·B
 p3‚Åw’è‚µ‚½ƒŒƒR[ƒh‚Ì”‚¾‚¯ƒŒƒR[ƒh‚Ì’Ç‰Á‚ğs‚È‚¤ƒ}ƒNƒŒ`®‚Ì–½—ß‚Å‚·B
@@ -402,12 +455,12 @@ myincol
 myindata
 mygetitem
 mydelitem
-
 %group
 ƒIƒuƒWƒFƒNƒg§Œä–½—ß
-
 %note
 00_mylv.hsp‚Æuser32.as‚ğƒCƒ“ƒNƒ‹[ƒh‚·‚é‚±‚Æ
+
+
 
 %index
 SetParent
