@@ -5,7 +5,7 @@
 	![mylv2022101102](https://user-images.githubusercontent.com/83401251/195083576-ff66d6e6-fc37-4ec7-a913-543aa6f75d3b.png)<br><br>　サンプル 00_mylvsample.hsp より | ![mylv20221011](https://user-images.githubusercontent.com/83401251/195083006-a499adee-a00d-4e33-9066-2b5a7e2ef537.png)
 	---: | ---
 
-今後、アップデートが不定期で行われる予定です。右上のCode（緑色）から、zipをダウンロードしてどうぞ
+今後、アップデートが不定期で行われる予定です。右のRelease、マイ･リストビューか、右上のcode（緑）からzipをダウンロードしてどうぞ
 
 ## 概要
 
