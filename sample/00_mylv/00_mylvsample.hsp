@@ -18,7 +18,7 @@
 
 	#include "user32.as"	// 必ずuser32.asをインクルードしてください
 	#include "sqlele.hsp"	//なくても使えますがmyindata命令は利用できなくなります
-	#include "common/00_mylv.hsp"
+	#include "00_mylv.hsp"
 
 	#enum WIN_ID = 0
 
