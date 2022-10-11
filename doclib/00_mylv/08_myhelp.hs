@@ -16,7 +16,7 @@ HSPの裏技??http://chokuto.ifdef.jp/urawaza/index.html
 %type
 ユーザー定義命令
 %ver
-1.2
+1.3
 %port
 Win
 
