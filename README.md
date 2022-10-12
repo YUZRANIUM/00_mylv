@@ -2,7 +2,7 @@
 
 * ### たった3行でリストビューを設置できます()
 
-	![mylv2022101102](https://user-images.githubusercontent.com/83401251/195083576-ff66d6e6-fc37-4ec7-a913-543aa6f75d3b.png)<br><br>　サンプル 00_mylvsample.hsp より | ![mylv20221011](https://user-images.githubusercontent.com/83401251/195083006-a499adee-a00d-4e33-9066-2b5a7e2ef537.png)<br>同梱サンプルファイル実行の様子
+	![mylv2022101102](https://user-images.githubusercontent.com/83401251/195083576-ff66d6e6-fc37-4ec7-a913-543aa6f75d3b.png)<br><br>サンプル 00_mylvsample.hsp より | ![mylv20221011](https://user-images.githubusercontent.com/83401251/195083006-a499adee-a00d-4e33-9066-2b5a7e2ef537.png)<br>同梱サンプルファイル実行の様子
 	---: | ---:
 
 今後、アップデートが不定期で行われる予定です。
@@ -25,31 +25,46 @@
 
 * SQLite(SQLele)との連携が可能で、場合によってはデータの情報（アイテム数やカラムの数など）を把握していなくてもリストビューの設置が可能
 
-* SQLeleとの連携により、サブルーチンジャンプで各カラムごとに昇順･降順が切替可能<br>（一旦アイテムを全削除してSQLiteでクエリ文叩いて作り直している。win32APIで実現しようと試みたが挫折。今後改善予定） 
+* SQLeleとの連携により、サブルーチンジャンプで各カラムごとに昇順･降順が切替可能<br>（一旦アイテムを全削除してSQLiteでクエリ文叩いて作り直している。win32APIで実現しようと試みたが挫折。今後改善予定）
+
+* 追加する`mycrelv`命令で設置されるリストビューのウィンドウスタイル
+
+	ウィンドウスタイル| 値 | 機能
+	:--- | :--- | ---
+	WS_CHILD | 0x40000000 | 子供にする
+	WS_VISIBLE | 0x10000000 | 見えるようにする
+	LVS_REPORT | 0x0001 | 詳細表示
+
+	拡張ウィンドウスタイル | 値 | 機能
+	:--- | :--- | ---
+	LVS_EX_HEADERDRAGDROP | 0x00000010 | ヘッダードラッグ・ドロップ
+	LVS_EX_FULLROWSELECT | 0x00000020 | 横一列まとめて選択
+	LVS_EX_GRIDLINES | 0x00000001 | グリッド線の表示
 
 <br>
 
 ## 追加命令
 
-<details>
+<details open>
 <summary>追加される命令一覧</summary>
 
-~~~ java
 
-//SQLのデータを文字列型1次元配列変数に変換･出力
+~~~ HSP
+
+//SQLのデータを文字列型1次元配列変数に変換･出力(マクロ)
 myindata rec_num, col_num, col_list, rec_data
 //p1 : レコードの数
 //p2 : カラムの数
 //p3 : カラムを格納した文字列型配列変数
 //p4 : レコードを受け取る文字列型配列変数
 
-//リストビュー設置
+//リストビュー設置(マクロ)
 mycrelv X, Y, ObjID, Objhwnd
 //p1,p2 : Xサイズ,Yサイズ
 //p3 : オブジェクトIDを受け取る変数
 //p4 : オブジェクトハンドルを受け取る変数
 
-//リストビューにカラムを個別指定で追加
+//リストビューにカラムを個別指定で追加(マクロ)
 myincol ObjID, col_list, col_num, col_w, (p5 = 0)
 //p1 : リストビューのオブジェクトID
 //p2 : カラムを格納した配列変数
@@ -57,7 +72,7 @@ myincol ObjID, col_list, col_num, col_w, (p5 = 0)
 //p4 : カラムの幅を格納した配列変数
 //p5(0) : 0=左揃え / 1=右揃え / 2=中央揃え
 
-//リストビューにカラムを同一指定で追加
+//リストビューにカラムを同一指定で追加(マクロ)
 myincol2 ObjID, col_list, col_num, (p4 = 75), (p5 = 0)
 //p1 : 設置したリストビューのオブジェクトID
 //p2 : カラムを格納した配列変数
@@ -65,7 +80,7 @@ myincol2 ObjID, col_list, col_num, (p4 = 75), (p5 = 0)
 //p4 : カラムの幅(整数)
 //p5 : 0=左揃え / 1=右揃え / 2=中央揃え
 
-//リストビューにレコードを追加
+//リストビューにレコードを追加(マクロ)
 myinitem ObjID, rec_data, rec_num, col_num
 //p1 : リストビューのオブジェクトID
 //p2 : レコードを格納した配列変数
@@ -78,7 +93,7 @@ mygetitem ObjID, col_num, gettext
 //p2 : カラムの数
 //p3 : 取得文字列を格納する文字列型変数
 
-//リストビューアイテムの削除
+//リストビューアイテムの全削除
 mydelitem ObjID
 //p1 : リストビューのオブジェクトID
 ~~~
@@ -94,7 +109,7 @@ mydelitem ObjID
 
 * ### SQLite(sqlele)連携によるデータの取得（例）
 
-	~~~ hsp
+	~~~ HSP
 	sql_q "SELECT * FROM MyCPU;"
 		rec_cnum = stat                //レコードの数
 		col_cnum = length(tmparr)      //カラムの数
@@ -106,7 +121,7 @@ mydelitem ObjID
 	~~~
 
 * ### リストビュー設置部分
-	~~~ hsp
+	~~~ HSP
 		mycrelv 400, 430, id_LVcpu, hLVcpu                   //リストビュー設置
 			myincol id_LVcpu, col_clis, col_cnum, col_cw //カラムの追加
 			myinitem id_LVcpu, cpu, rec_cnum, col_cnum   //全アイテム追加
@@ -115,7 +130,7 @@ mydelitem ObjID
 	~~~
 
 * ### レコードの取得
-	~~~ hsp
+	~~~ HSP
 	/***レコードの取得***/
 	*getitem
 		gsel WIN_ID
@@ -127,13 +142,13 @@ mydelitem ObjID
 	~~~
 
 * ### リストビューの並べ替え
-	~~~ hsp
+	~~~ HSP
 	/***リストビューの昇降順***/
 	*notify
-		dupptr nmhdr, lparam, 12, 4   :   hLV = nmhdr(0)	// リストビューのオブジェクトハンドル
+		dupptr nmhdr, lparam, 12, 4  :  hLV = nmhdr(0)	// リストビューのオブジェクトハンドル
 
 		if (nmhdr(2) = LVN_COLUMNCLICK) {
-			dupptr nmlv, lparam, 40, 4   :   index = nmlv(4)	//クリックされたカラムのインデックス
+			dupptr nmlv, lparam, 40, 4  :  index = nmlv(4)	//クリックされたカラムのインデックス
 
 			gsel WIN_ID
 
