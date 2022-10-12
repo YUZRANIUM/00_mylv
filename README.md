@@ -109,7 +109,7 @@ mydelitem ObjID
 
 * ### SQLite(sqlele)連携によるデータの取得（例）
 
-	~~~ HSP
+	~~~ Haskell
 	sql_q "SELECT * FROM MyCPU;"
 		rec_cnum = stat                //レコードの数
 		col_cnum = length(tmparr)      //カラムの数
@@ -121,7 +121,7 @@ mydelitem ObjID
 	~~~
 
 * ### リストビュー設置部分
-	~~~ HSP
+	~~~ hsp
 		mycrelv 400, 430, id_LVcpu, hLVcpu                   //リストビュー設置
 			myincol id_LVcpu, col_clis, col_cnum, col_cw //カラムの追加
 			myinitem id_LVcpu, cpu, rec_cnum, col_cnum   //全アイテム追加
@@ -130,7 +130,7 @@ mydelitem ObjID
 	~~~
 
 * ### レコードの取得
-	~~~ HSP
+	~~~ hsp
 	/***レコードの取得***/
 	*getitem
 		gsel WIN_ID
@@ -142,7 +142,7 @@ mydelitem ObjID
 	~~~
 
 * ### リストビューの並べ替え
-	~~~ HSP
+	~~~ hsp
 	/***リストビューの昇降順***/
 	*notify
 		dupptr nmhdr, lparam, 12, 4  :  hLV = nmhdr(0)	// リストビューのオブジェクトハンドル
