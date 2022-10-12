@@ -2,27 +2,40 @@
 
 * ### たった3行でリストビューを設置できます()
 
-	![mylv2022101102](https://user-images.githubusercontent.com/83401251/195083576-ff66d6e6-fc37-4ec7-a913-543aa6f75d3b.png)<br><br>　サンプル 00_mylvsample.hsp より | ![mylv20221011](https://user-images.githubusercontent.com/83401251/195083006-a499adee-a00d-4e33-9066-2b5a7e2ef537.png)
-	---: | ---
+	![mylv2022101102](https://user-images.githubusercontent.com/83401251/195083576-ff66d6e6-fc37-4ec7-a913-543aa6f75d3b.png)<br><br>　サンプル 00_mylvsample.hsp より | ![mylv20221011](https://user-images.githubusercontent.com/83401251/195083006-a499adee-a00d-4e33-9066-2b5a7e2ef537.png)<br>同梱サンプルファイル実行の様子
+	---: | ---:
 
-今後、アップデートが不定期で行われる予定です。右のRelease、マイ･リストビューか、右上のcode（緑）からzipをダウンロードしてどうぞ
+今後、アップデートが不定期で行われる予定です。
 
-## 概要
+右のRelease、マイ･リストビューか、右上のcode（緑）からzipをダウンロードしてどうぞ
 
-00_mylv はあらゆるデータや値を比較的簡単にリストビューとして配置するモジュールです。
-
-CSV や SQL などのデータを文字列型の1次元配列変数に変換することでリストビューを設置することが可能です。
-
-また、HSP の SQLite 支援モジュールである SQLele を利用する場合は、専用のマクロ形式の変換命令である myindata命令 を利用することで比較的簡単にリストビューを設置することができます。
-
-リストビューの設置には `#include "user32.as"` をインクルードすることが必要です。
+<br />
 
 ## 特徴
+
+* リストビューの設置部分に関してはアイテム数によらず３行で指定レコード（アイテム）全てを設置可能
+
+* 整数、実数、文字列をすべて文字列型の1次元配列変数として扱う
+
+* 複数選択可能、レコード（横一列）まとまって強調表示
+
+* デフォルトでカラムをドラッグ・アンド・ドロップで入れ替え可能
+
+* 内部では文字列型の1次元配列変数として扱っているので、CSVも変換できれば対応可能
+
+* SQLite(SQLele)との連携が可能で、場合によってはデータの情報（アイテム数やカラムの数など）を把握していなくてもリストビューの設置が可能
+
+* SQLeleとの連携により、サブルーチンジャンプで各カラムごとに昇順･降順が切替可能<br>（一旦アイテムを全削除してSQLiteでクエリ文叩いて作り直している。win32APIで実現しようと試みたが挫折。今後改善予定） 
+
+<br>
+
+## 追加命令
 
 <details>
 <summary>追加される命令一覧</summary>
 
 ~~~ java
+
 //SQLのデータを文字列型1次元配列変数に変換･出力
 myindata rec_num, col_num, col_list, rec_data
 //p1 : レコードの数
@@ -72,6 +85,7 @@ mydelitem ObjID
 
 </details>
 
+<br>
 
 * ### 用意しなければならない変数一覧
 ![mylv04](https://user-images.githubusercontent.com/83401251/195087503-a21b35ae-8bbe-4cf2-99f7-1ad34fb70cf7.png)| 　ネストしたrepeat文をマクロ登録しているため、どうしても変数が多くなってしまいます。
@@ -79,12 +93,13 @@ mydelitem ObjID
 
 
 * ### SQLite(sqlele)連携によるデータの取得（例）
+
 	~~~ hsp
 	sql_q "SELECT * FROM MyCPU;"
-		rec_cnum = stat					//レコードの数
-		col_cnum = length(tmparr)		//カラムの数
-		col_clis = sql_collist()		//カラムリスト
-		split col_clis, ",", col_clis	//カラムリストを配列変数に
+		rec_cnum = stat                //レコードの数
+		col_cnum = length(tmparr)      //カラムの数
+		col_clis = sql_collist()       //カラムリスト
+		split col_clis, ",", col_clis  //カラムリストを配列変数に
 
 		//全アイテムを文字列型1次元配列として変数cpuに格納
 		myindata rec_cnum, col_cnum, col_clis, cpu	//sqLele.hspインクルード時のみ利用可
@@ -92,11 +107,11 @@ mydelitem ObjID
 
 * ### リストビュー設置部分
 	~~~ hsp
-		mycrelv 400, 430, id_LVcpu, hLVcpu					//リストビュー設置
-			myincol id_LVcpu, col_clis, col_cnum, col_cw	//カラムの追加
-			myinitem id_LVcpu, cpu, rec_cnum, col_cnum		//全アイテム追加
+		mycrelv 400, 430, id_LVcpu, hLVcpu                   //リストビュー設置
+			myincol id_LVcpu, col_clis, col_cnum, col_cw //カラムの追加
+			myinitem id_LVcpu, cpu, rec_cnum, col_cnum   //全アイテム追加
 
-	oncmd gosub *notify, WM_NOTIFY		//リストビューの並び替え
+	oncmd gosub *notify, WM_NOTIFY    //リストビューの並び替え
 	~~~
 
 * ### レコードの取得
@@ -115,10 +130,10 @@ mydelitem ObjID
 	~~~ hsp
 	/***リストビューの昇降順***/
 	*notify
-		dupptr nmhdr, lparam, 12, 4   :   hLV = nmhdr(0)	 // リストビューのオブジェクトハンドル
+		dupptr nmhdr, lparam, 12, 4   :   hLV = nmhdr(0)	// リストビューのオブジェクトハンドル
 
 		if (nmhdr(2) = LVN_COLUMNCLICK) {
-			dupptr nmlv, lparam, 40, 4   :   index = nmlv(4) //クリックされたカラムのインデックス
+			dupptr nmlv, lparam, 40, 4   :   index = nmlv(4)	//クリックされたカラムのインデックス
 
 			gsel WIN_ID
 
@@ -129,7 +144,7 @@ mydelitem ObjID
 					case hLVcpu
 						sdim cpu, 2048
 						swc = swc * -1
-						if swc == -1 : sqsc = " DESC;"   :   else : sqsc = " ASC;"  //DESC : 降順 / ASC : 昇順
+						if swc == -1 : sqsc = " DESC;"   :   else : sqsc = " ASC;"	//DESC : 降順 / ASC : 昇順
 
 						sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + sqsc
 							col_clis = sql_collist()   :   split col_clis, ",", col_clis
