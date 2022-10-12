@@ -42,7 +42,7 @@
 			split col_clis, ",", col_clis	//カラムリストを配列変数に
 
 			//全アイテムを文字列型配列として変数cpuに格納
-			myindata rec_cnum, col_cnum, col_clis, cpu		//sqLeleインクルード時のみ利用可
+			myindata rec_cnum, col_cnum, col_clis, cpu	//sqLeleインクルード時のみ利用可
 
 		sql_q "COMMIT;"
 	sql_close
@@ -69,12 +69,10 @@
 /***レコードの取得***/
 *getitem
 	gsel WIN_ID
-
 	sdim getlist, 1024
 
 	//※注意リストビューからフォーカス外しても前回の選択状態を維持しています
 	mygetitem id_LVcpu, col_cnum, getlist
-
 	dialog getlist, 0, "GetItem"
 
 	return
@@ -82,17 +80,14 @@
 
 /***リストビューの昇降順***/
 *notify
-
-	dupptr nmhdr, lparam, 12, 4
-	hLV = nmhdr(0)		// リストビューのオブジェクトハンドル
+	/*** リストビューのオブジェクトハンドル取得 ***/
+	dupptr nmhdr, lparam, 12, 4   :   hLV = nmhdr(0)
 
 	if (nmhdr(2) = LVN_COLUMNCLICK) {
 
-		dupptr nmlv, lparam, 40, 4
-		index = nmlv(4)		//クリックされたカラムのインデックス
-
+		/*** クリックされたカラムのインデックス取得 ***/
+		dupptr nmlv, lparam, 40, 4   :   index = nmlv(4)
 		gsel WIN_ID
-
 		sql_open db
 			sql_q "BEGIN;"
 
@@ -101,7 +96,8 @@
 					sdim cpu, 2048
 
 					swc = swc * -1
-					if swc == -1 : sqsc = " DESC;"   :   else : sqsc = " ASC;"	//DESC : 降順 / ASC : 昇順
+					//DESC : 降順 / ASC : 昇順
+					if swc == -1 : sqsc = " DESC;"   :   else : sqsc = " ASC;"
 
 					sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + sqsc
 						col_clis = sql_collist()   :   split col_clis, ",", col_clis
@@ -109,9 +105,9 @@
 
 					mydelitem id_LVcpu	//現在のリストビューの全レコードを削除
 					myinitem id_LVcpu, cpu, rec_cnum, col_cnum
-
 					swbreak
 			swend
+
 			sql_q "COMMIT;"
 		sql_close
 	}
