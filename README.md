@@ -45,7 +45,7 @@
 
 ## 追加命令
 
-<details open>
+<details>
 <summary>追加される命令一覧</summary>
 
 
