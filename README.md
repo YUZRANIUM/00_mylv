@@ -49,9 +49,57 @@
 
 ## 追加命令
 
-<details>
+<details open>
 <summary>追加される命令一覧</summary>
 
+<!DOCTYPE html>
+
+<html>
+
+<style>
+.prm {
+	color: #1288bb;
+}
+.func{
+	color: #bb44aa;
+	font-size: 18px
+}
+.comment{
+	color: #449944;
+}
+</style>
+
+<body>
+<br>
+<div class= text>
+<div class= comment>//リストビュー設置</div>
+<span class= func>mycrelv</span> <span class= prm>p1, p2, p3, p4</span>
+<div class= comment>
+//p1,p2 : Xサイズ,Yサイズ<br>
+//p3 : オブジェクトIDを受け取る変数<br>
+//p4 : オブジェクトハンドルを受け取る変数</div>
+</dev>
+<br>
+
+//リストビューにカラムを追加
+myincol p1, p2, p3, p4, (p5 = 0)
+//%1 : 設置したリストビューのオブジェクトID
+//%2 : カラムを格納した配列変数
+//%3 : カラムの数
+//%4 : カラムの幅(整数型の配列変数)
+//%5(0) : 0=左揃え / 1=右揃え / 2=中央揃え
+
+//リストビューにカラムを追加
+myincol2 p1, p2, p3, (p4 = 75), (p5 = 0)
+//%1 : 設置したリストビューのオブジェクトID
+//%2 : カラムを格納した配列変数
+//%3 : カラムの数
+//%4(75) : カラムの幅(整数)
+//%5(0) : 0=左揃え / 1=右揃え / 2=中央揃え
+
+
+</body>
+</html>
 
 </details>
 
