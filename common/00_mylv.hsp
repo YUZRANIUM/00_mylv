@@ -228,8 +228,8 @@
 
 #module
 //リストビューアイテムの削除
-//h1 : リストビューのオブジェクトID
-#deffunc mydelitem int h1
-	sendmsg objinfo(h1, 2), 0x1009, 0, 0
+//p1 : リストビューのオブジェクトID
+#deffunc mydelitem int p1
+	sendmsg objinfo(p1, 2), 0x1009, 0, 0
 	return
 #global
