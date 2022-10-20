@@ -124,6 +124,9 @@
 
 <br>
 
+## 必要環境
+* Windows11
+* HSP3.6以上
 
 ## 使用言語
 * [Hot Soup Processor(HSP3)](https://hsp.tv/)
