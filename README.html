@@ -1310,7 +1310,15 @@ body,
 
 </style>
         
-        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: MyricaM M;
+                font-size: 12px;
+                line-height: 1.5;
+            }
+        </style>
         <style>
 .task-list-item {
     list-style-type: none;
@@ -1324,7 +1332,7 @@ body,
         
     </head>
     <body class="vscode-body vscode-dark">
-        <div class="github-markdown-body github-markdown-light">
+        <div class="github-markdown-body github-markdown-auto">
             <div class="github-markdown-content"><span id="markdown-mermaid" aria-hidden="true"
                     data-dark-mode-theme="dark"
                     data-light-mode-theme="default"></span>
@@ -1332,6 +1340,8 @@ body,
 <ul>
 <li>
 <h3 id="たった3行でリストビューを設置できます">たった3行でリストビューを設置できます()</h3>
+</li>
+</ul>
 <table>
 <thead>
 <tr>
@@ -1340,8 +1350,6 @@ body,
 </tr>
 </thead>
 </table>
-</li>
-</ul>
 <p><strong>今後、アップデートが不定期で行われる予定です。</strong></p>
 <p>右のRelease、マイ･リストビューか、右上のcode（緑）からzipをダウンロードしてどうぞ</p>
 <h2 id="特徴">特徴</h2>
@@ -1353,16 +1361,68 @@ body,
 <p>整数、実数、文字列をすべて<strong>文字列型の1次元配列変数</strong>として扱う</p>
 </li>
 <li>
-<p>内部では文字列型の1次元配列変数として扱っているので、<strong>CSVも変換できれば対応可能</strong></p>
+<p>内部では文字列型の1次元配列変数として扱っているので、<strong>CSVも変換することで対応可能</strong></p>
 </li>
 <li>
-<p>SQLite(SQLele)との連携が可能で、<strong>場合によってはデータの情報（アイテム数やカラムの数など）を把握していなくてもリストビューの設置が可能</strong></p>
+<p>SQLite(SQLele)との連携が可能で、<strong>場合によってはアイテム数やカラムの数などを把握していなくても設置が可能</strong></p>
 </li>
 <li>
-<p>SQLiteのデータベース（以下DB）操作により、<strong>各カラムごとにレコードの昇順･降順が切替可能</strong><br>（実際は、アイテムを全削除してSQLでクエリ叩いてリストビューを作り直している。win32APIでアイテムの並び替えを実現しようと試みたが挫折。今後改善予定）</p>
+<p>SQLiteのデータベース（以下DB）操作により、<strong>各カラムごとにレコードの昇順･降順が切替可能</strong><br>（実際は、アイテムを全削除しSQLでクエリ叩いてリストビューを作り直している。win32APIでアイテムの並び替えを実現しようと試みたが挫折。今後改善予定）</p>
 </li>
+</ul>
+<br>
+<h2 id="使用方法">使用方法</h2>
+<pre><code>.
+├── common
+│   └── 00_mylv.hsp
+├── doclib
+│   └── 00_mylv
+│       ├── 00_mylv.txt
+│       └── 08_myhelp.hs
+├── sample
+│   └── 00_mylv
+│       ├── 00_mylvsample.hsp
+│       └── Syouhin.db
+├── README.md
+└── README.html
+</code></pre>
+<ul>
 <li>
-<p>追加する<code>mycrelv</code>命令で設置されるリストビューのウィンドウスタイル</p>
+<p>common下の 00_mylv.hsp をユーザースクリプトのディレクトリか、HSP のインストールディレクトリ下の commonフォルダ内において、00_mylv.hspをインクルードしてください。</p>
+<pre><code>  例） hsp36/common/00_mylv.hsp
+</code></pre>
+</li>
+</ul>
+<br>
+<ul>
+<li>
+<p>doclib下の 00_mylvフォルダは、HSPのインストールディレクトリ下にあるdoclibフォルダ内に、00_mylvフォルダごと置いてください。</p>
+<pre><code>  例） hsp36/doclib/00_mylv
+</code></pre>
+</li>
+</ul>
+<br>
+<ul>
+<li>
+<p>sample下の 00_mylvフォルダは、HSPのインストールディレクトリ下にあるsampleフォルダ内に、00_mylvフォルダごと置いてください。</p>
+<pre><code>  例） hsp36/sample/00_mylv
+</code></pre>
+</li>
+</ul>
+<br>
+<ul>
+<li>リストビュー設置には<code>#include &quot;user32.as&quot;</code>をインクルード、SQLiteとの連携には<code>#include &quot;sqlele.hsp&quot;</code>をインクルードし、スクリプトディレクトリに<code>sqlite3.dll</code>をおいて下さい。<strong>(※<code>sqlite3.dll</code>は同梱していません。)</strong></li>
+</ul>
+<br>
+<h2 id="追加命令">追加命令</h2>
+<details>
+<summary>追加される命令一覧</summary>
+<p><img src="https://user-images.githubusercontent.com/83401251/195515826-3340f36b-06f3-4b28-acfb-35debe2e14dd.png" alt="mylv11"></p>
+</details>
+<br>
+<details>
+<summary>設置されるリストビューのウィンドウスタイル</summary>
+<br>
 <table>
 <thead>
 <tr>
@@ -1415,13 +1475,6 @@ body,
 </tr>
 </tbody>
 </table>
-</li>
-</ul>
-<br>
-<h2 id="追加命令">追加命令</h2>
-<details>
-<summary>追加される命令一覧</summary>
-<p><img src="https://user-images.githubusercontent.com/83401251/195515826-3340f36b-06f3-4b28-acfb-35debe2e14dd.png" alt="mylv11"></p>
 </details>
 <br>
 <details>
@@ -1458,41 +1511,21 @@ body,
 </li>
 </ul>
 </details>
-<h2 id="使用方法">使用方法</h2>
-<pre><code>├ common
-│   └ 00_mylv.hsp
-├ doclib
-│   └ 00_mylv
-│       ├ 00_mylv.txt
-│       └ 08_myhelp.hs
-├ sample
-│   └ 00_mylv
-│       ├ 00_mylvsample
-│       └ Syouhin.db
-└ README.md
-</code></pre>
+<br>
+<h2 id="使用言語">使用言語</h2>
 <ul>
-<li>
-<p>00_mylv.hsp をユーザースクリプトのディレクトリか、HSP のインストールディレクトリ下の commonフォルダ内において、00_mylv.hspをインクルードしてください。</p>
-</li>
-<li>
-<p>doclib下の 00_mylvフォルダは、HSPのインストールディレクトリ下にある同じ名前のdoclibフォルダ内に、00_mylvフォルダごと置いてください。</p>
-</li>
-<li>
-<p>sample下の 00_mylvフォルダは、HSPのインストールディレクトリ下にある同じ名前のsampleフォルダ内に、00_mylvフォルダごと置いてください。</p>
-</li>
-<li>
-<p>リストビュー設置には<code>#include &quot;user32.as&quot;</code>をインクルード、SQLiteとの連携には<code>#include &quot;sqlele.hsp&quot;</code>をインクルードし、スクリプトディレクトリに<code>sqlite3.dll</code>をおいて下さい。<strong>(※<code>sqlite3.dll</code>は同梱していません。)</strong></p>
-</li>
+<li><a href="https://hsp.tv/">Hot Soup Processor(HSP3)</a></li>
+<li><a href="https://www.sqlite.org">SQLele</a></li>
 </ul>
-<h2 id="動作環境">動作環境</h2>
+<h2 id="開発環境">開発環境</h2>
 <ul>
-<li>Windows11 22H2</li>
+<li>Windows11 Pro 22H2 x64</li>
+<li>Visual Studio Code</li>
 <li>HSP3.7beta3</li>
 </ul>
 <hr>
-<p>本ソフトウェアおよび関連文書のファイル（以下「ソフトウェア」）の複製を取得するすべての人に対し、ソフトウェアを無制限に扱うことを無償で許可します。<br>
-これには、ソフトウェアの複製を使用、複写、変更、結合、掲載、頒布、サブライセンス、および/または販売する権利、およびソフトウェアを提供する相手に同じことを許可する権利も無制限に含まれます。</p>
+<p>本ソフトウェアおよび関連文書のファイル（以下「ソフトウェア」）の複製を取得するすべての人に対し、ソフトウェアを無制限に扱うことを無償で許可します。</p>
+<p>これには、ソフトウェアの複製を使用、複写、変更、結合、掲載、頒布、サブライセンス、および/または販売する権利、およびソフトウェアを提供する相手に同じことを許可する権利も無制限に含まれます。</p>
 <p>ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく提供されます。ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。</p>
 <p>作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。</p>
 <h2 id="更新履歴">更新履歴</h2>
