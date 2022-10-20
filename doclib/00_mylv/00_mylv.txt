@@ -40,17 +40,18 @@ CSV や SQL などのデータを文字列型の1次元配列変数に変換することで
 │   └ 00_mylv
 │       ├ 00_mylvsample
 │       └ Syouhin.db
-└ README.md
+├ README.md
+└ README.html
 
 00_mylv.hsp をユーザースクリプトのディレクトリか、HSP のインストール
 ディレクトリ下の commonフォルダ内において、00_mylv.hspをインクルード
 してください。
 
-doclib下の 00_mylvフォルダは、HSPのインストールディレクトリ下にある
-同じ名前のdoclibフォルダ内に、00_mylvフォルダごと置いてください。
+doclib下の 00_mylvフォルダは、HSPのインストールディレクトリ下の
+doclibフォルダ内に、00_mylvフォルダごと置いてください。
 
-sample下の 00_mylvフォルダは、HSPのインストールディレクトリ下にある
-同じ名前のsampleフォルダ内に、00_mylvフォルダごと置いてください。
+sample下の 00_mylvフォルダは、HSPのインストールディレクトリ下の
+sampleフォルダ内に、00_mylvフォルダごと置いてください。
 
 
 リストビューの設置にはuser32.asをインクルード、SQLiteとの連携には
