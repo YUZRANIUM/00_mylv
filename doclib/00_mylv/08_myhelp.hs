@@ -1,11 +1,11 @@
 ;
 ;	00_mylv.hsp用 HELPソースファイル
-;	制作日	: 2022/10/10
+;	制作日	: 2022/10/20
 ;	製作者	: YUZURANIUM（ゆずらにうむ）
 ;	Twitter	: https://twitter.com/YUZRANIUM
 
 %date
-2022/10/09
+2022/10/20
 %author
 YUZURANIUM(ゆずらにうむ)
 %url
@@ -16,7 +16,7 @@ HSPの裏技??http://chokuto.ifdef.jp/urawaza/index.html
 %type
 ユーザー定義命令
 %ver
-1.3
+0.1.4
 %port
 Win
 
