@@ -1,20 +1,20 @@
-// INFO ************************************************************************
+// INFO ****************************************************
 // FileName : 00_mylvsample.hsp
-// Version  : 0.1.4
-// Date     : 2022/10/20
+// Version  : 0.2.0
+// Date     : 2022/10/25
 // Author   : YUZURANIUM（ゆずらにうむ）
-// URL      : https://twitter.com/YUZRANIUM
-//******************************************************************************
+// Twitter  : https://twitter.com/YUZRANIUM
+// Git Hub  : https://github.com/YUZURANIUM/PC_CareingDiary
+//**********************************************************
+/* Description
+SQLele(SQLite)との併用を前提に個人で作ったものに手を加えて配布しています。
 
-// SQLele(SQLite)との併用を前提に個人で作ったものに手を加えて配布しています。
-//
-// *用語*
-// アイテム	: 個々の値、フィールド、Excelで言うところの一つのセル
-// カラム	: 個々の値を分類するときの、その特徴や種類、属性
-// レコード	: データそのもの
-// テーブル	: Excelで言うところのシート、表
-//******************************************************************************
-
+*用語*
+アイテム  :  個々の値、フィールド、Excelで言うところの一つのセル
+カラム    :  個々の値を分類するときの、その特徴や種類、属性
+レコード  :  データそのもの
+テーブル  :  Excelで言うところのシート、表
+************************************************************/
 
 	#include "user32.as"	// 必ずuser32.asをインクルードしてください
 	#include "sqlele.hsp"	//なくても使えますがmyindata命令は利用できなくなります
@@ -33,7 +33,6 @@
 
 	sql_open db
 		sql_q "BEGIN;"
-
 
 		sql_q "SELECT * FROM MyCPU;"
 			rec_cnum = stat					//レコードの数
@@ -61,8 +60,7 @@
 			myincol id_LVcpu, col_clis, col_cnum, col_cw	//カラムの追加
 			myinitem id_LVcpu, cpu, rec_cnum, col_cnum		//全アイテム追加
 
-	oncmd gosub *notify, WM_NOTIFY				//リストビューの並び替え
-
+	oncmd gosub *lvnotify, WM_NOTIFY				//リストビューの並び替え
 	stop
 
 
@@ -70,24 +68,22 @@
 *getitem
 	gsel WIN_ID
 	sdim getlist, 1024
-
 	//※注意リストビューからフォーカス外しても前回の選択状態を維持しています
 	mygetitem id_LVcpu, col_cnum, getlist
 	dialog getlist, 0, "GetItem"
-
 	return
 
 
 /***リストビューの昇降順***/
-*notify
+*lvnotify
 	/*** リストビューのオブジェクトハンドル取得 ***/
 	dupptr nmhdr, lparam, 12, 4   :   hLV = nmhdr(0)
 
 	if (nmhdr(2) = LVN_COLUMNCLICK) {
-
 		/*** クリックされたカラムのインデックス取得 ***/
 		dupptr nmlv, lparam, 40, 4   :   index = nmlv(4)
 		gsel WIN_ID
+
 		sql_open db
 			sql_q "BEGIN;"
 
@@ -100,7 +96,6 @@
 					if swc == -1 : sqsc = " DESC;"   :   else : sqsc = " ASC;"
 
 					sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + sqsc
-						col_clis = sql_collist()   :   split col_clis, ",", col_clis
 						myindata rec_cnum, col_cnum, col_clis, cpu
 
 					mydelitem id_LVcpu	//現在のリストビューの全レコードを削除

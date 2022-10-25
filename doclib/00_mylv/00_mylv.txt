@@ -3,10 +3,11 @@
 	FileName : 00_mylv.txt
 
 	Module   : 00_mylv.hsp
-	Version  : 0.1.4
-	Date     : 2022/10/20
+	Version  : 0.2.0
+	Date     : 2022/10/25
 	Author   : YUZURANIUM（ゆずらにうむ）
 	URL      : https://twitter.com/YUZRANIUM
+	Git Hub  : https://github.com/YUZURANIUM/PC_CareingDiary
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	必要環境 | HSP 3.6 以上
 	動作環境 | Windows11 22H2
@@ -80,6 +81,10 @@ sqlele.hspをインクルードし、スクリプトディレクトリにsqlele3.dllを
 
 更新履歴
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ver 0.2.0
+2022/10/25
+サンプルファイル及び、ヘルプファイルの修正
 
 ver 0.1.4
 2022/10/20
