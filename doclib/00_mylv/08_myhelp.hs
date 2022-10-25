@@ -128,22 +128,15 @@ if (nmhdr(2) == LVN_COLUMNCLICK) {
 		case hLVcpu
 			sdim cpu, 2048
 			swc = swc * -1
-			if swc = -1 {
-				sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " DESC;"
-			}
-			else {
-				sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + " ASC;"
-			}
-				col_clis = sql_collist()
-				split col_clis, ",", col_clis
+			if swc == -1 : sqsc = " DESC;"   :   else : sqsc = " ASC;"
+
+			sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + sqsc
 				myindata rec_cnum, col_cnum, col_clis, cpu
 
 			gsel 2
 
 			mydelitem id_LVcpu
-
 			myinitem id_LVcpu, cpu, rec_cnum, col_cnum
-
 			swbreak
 %href
 mycrelv
