@@ -46,8 +46,8 @@
 
 #define ICC_LISTVIEW_CLASSES    4
 
-#define global WS_CHILD    0x40000000
-#define global WS_VISIBLE  0x10000000
+#define WS_CHILD    0x40000000
+#define WS_VISIBLE  0x10000000
 
 #define LVS_REPORT         0x0001
 
