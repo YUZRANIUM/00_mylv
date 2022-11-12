@@ -3,11 +3,11 @@
 	FileName : 00_mylv.txt
 
 	Module   : 00_mylv.hsp
-	Version  : 0.2.0
-	Date     : 2022/10/25
-	Author   : YUZURANIUM（ゆずらにうむ）
+	Version  : 0.2.1
+	Date     : 2022/11/12
+	Author   : YUZRANIUM（ゆずらにうむ）
 	URL      : https://twitter.com/YUZRANIUM
-	Git Hub  : https://github.com/YUZURANIUM/PC_CareingDiary
+	Git Hub  : https://github.com/YUZRANIUM/00_mylv
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	必要環境 | HSP 3.6 以上
 	動作環境 | Windows11 22H2

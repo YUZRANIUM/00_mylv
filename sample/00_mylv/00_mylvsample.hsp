@@ -1,10 +1,10 @@
 // INFO ****************************************************
 // FileName : 00_mylvsample.hsp
-// Version  : 0.2.0
-// Date     : 2022/10/25
-// Author   : YUZURANIUM（ゆずらにうむ）
+// Version  : 0.2.1
+// Date     : 2022/11/12
+// Author   : YUZRANIUM（ゆずらにうむ）
 // Twitter  : https://twitter.com/YUZRANIUM
-// Git Hub  : https://github.com/YUZURANIUM/PC_CareingDiary
+// GitHub   : https://github.com/YUZRANIUM/00_mylv
 //**********************************************************
 /* Description
 SQLele(SQLite)との併用を前提に個人で作ったものに手を加えて配布しています。
