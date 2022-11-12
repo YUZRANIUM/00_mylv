@@ -1,22 +1,29 @@
-;
-;	00_mylv.hsp用 HELPソースファイル
-;	制作日	: 2022/10/20
-;	製作者	: YUZURANIUM（ゆずらにうむ）
-;	Twitter	: https://twitter.com/YUZRANIUM
+; INFO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+; FileName : 08_myhelp.hs
+; Version  : 0.2.1
+; Date     : 2022/11/12
+; Author   : YUZRANIUM（ゆずらにうむ）
+; Twitter  : https://twitter.com/YUZRANIUM
+; GitHub   : https://github.com/YUZRANIUM/00_mylv
+;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+; Description
+; 00_mylv.hspのヘルプファイルです。
+;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 %date
-2022/10/20
+2022/11/12
 %author
-YUZURANIUM(ゆずらにうむ)
+YUZRANIUM(ゆずらにうむ)
 %url
 https://twitter.com/YUZRANIUM
+https://github.com/YUZRANIUM/00_mylv
 HSPの裏技??http://chokuto.ifdef.jp/urawaza/index.html
 %dll
 00_mylv
 %type
 ユーザー定義命令
 %ver
-0.1.4
+0.2.1
 %port
 Win
 

@@ -1,16 +1,16 @@
 // INFO ****************************************************
 // FileName : 00_mylv.hsp
-// Version  : 0.2.0
-// Date     : 2022/10/25
-// Author   : YUZURANIUM（ゆずらにうむ）
-// URL      : https://twitter.com/YUZRANIUM
-// Git Hub  : https://github.com/YUZURANIUM/PC_CareingDiary
-//
-// Thanks ちょくと様
-//『HSPの裏技』リストビューを作成してみる ACT-1
-// http://chokuto.ifdef.jp/urawaza/listview1.html
+// Version  : 0.2.1
+// Date     : 2022/11/12
+// Author   : YUZRANIUM（ゆずらにうむ）
+// Twitter  : https://twitter.com/YUZRANIUM
+// GitHub   : https://github.com/YUZRANIUM/00_mylv
 //**********************************************************
-
+/* Description
+Thanks ちょくと様
+『HSPの裏技』リストビューを作成してみる ACT-1
+http://chokuto.ifdef.jp/urawaza/listview1.html
+************************************************************/
 // ※注意※
 // 一部の命令はsqlele.asをインクルードしなければ使うことが出来ないものがあります。
 // また、リストビュー設置に関してuser32.asをインクルードしてください。
