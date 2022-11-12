@@ -1,4 +1,4 @@
-## マイ･リストビューver 0.2.0
+## マイ･リストビュー ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/YUZRANIUM/00_mylv?include_prereleases&style=flat-square)
 
 * ### たった3行でリストビューを設置できます()
 
