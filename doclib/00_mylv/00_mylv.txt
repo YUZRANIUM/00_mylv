@@ -3,8 +3,8 @@
 	FileName : 00_mylv.txt
 
 	Module   : 00_mylv.hsp
-	Version  : 0.2.1
-	Date     : 2022/11/12
+	Version  : 0.30
+	Date     : 2022/11/28
 	Author   : YUZRANIUM（ゆずらにうむ）
 	URL      : https://twitter.com/YUZRANIUM
 	Git Hub  : https://github.com/YUZRANIUM/00_mylv
@@ -81,6 +81,21 @@ sqlele.hspをインクルードし、スクリプトディレクトリにsqlele3.dllを
 
 更新履歴
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+### ver 0.30
+2022/11/28
+* オブジェクトIDを廃止. 全てオブジェクトハンドルを指定するようにパラメータの削減.
+
+* リストビュー設置命令mylv命令の設置後、システム変数statにオブジェクトIDが代入されるように
+
+* リストビューにアイテムを追加する命令 insqlitem命令を新規追加
+    2次元配列変数に対応可能となったのでsqleleのレコードセット変数をそのまま扱える
+
+* アイテムの文字列取得命令を改良。
+    getlvitem命令で区切り文字を選択できるように（初期値は ","）
+
+* 従来の削除系の命令mydelitem命令を削除。
+    dellv命令を新規追加し、アイテム、カラム、全アイテムの3つから削除モードを選べるように.
 
 ver 0.2.0
 2022/10/25

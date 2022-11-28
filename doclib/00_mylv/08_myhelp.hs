@@ -1,7 +1,7 @@
 ; INFO ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ; FileName : 08_myhelp.hs
-; Version  : 0.2.1
-; Date     : 2022/11/12
+; Version  : 0.30
+; Date     : 2022/11/28
 ; Author   : YUZRANIUM（ゆずらにうむ）
 ; Twitter  : https://twitter.com/YUZRANIUM
 ; GitHub   : https://github.com/YUZRANIUM/00_mylv
@@ -11,9 +11,9 @@
 ;━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 %date
-2022/11/12
+2022/11/28
 %author
-YUZRANIUM(ゆずらにうむ)
+YUZRANIUM
 %url
 https://twitter.com/YUZRANIUM
 https://github.com/YUZRANIUM/00_mylv
@@ -23,43 +23,13 @@ HSPの裏技??http://chokuto.ifdef.jp/urawaza/index.html
 %type
 ユーザー定義命令
 %ver
-0.2.1
+0.30
 %port
 Win
 
-%index
-Mycolor
-カラー設定
-%group
-画面制御命令
-%prm
-p1,p2,p3,p4
-p1,p2,p3=0～1	: 色コード（R,G,Bの輝度）
-p4 = 0,1,2	: モード切り替え
-%inst
-メッセージ表示、描画などの色、またはオブジェクトが使用する色を指定した値に設定します。
-p1,p2,p3がそれぞれ、R,G,Bの輝度になります。
-^
-色コードを0から1の間で指定します。0が最も暗く、1が最も明るくなります。
-^
-標準のcolor命令とobjcolor命令の両方を兼ね備えておりp4パラメータでどちらかに切り替え、または両方使用することができます。
-^
-	値 : 動作
-	----------------
-	 0 : color命令
-	 1 : objcolor命令
-	 2 : 両方
-
-%href
-color
-objcolor
-
-%note
-00_mylv.hspをインクルードすること
-
 
 %index
-mycrelv
+mylv
 リストビュー設置
 %prm
 p1,p2,p3,p4
@@ -89,17 +59,17 @@ sql_open db
 
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
-	mycrelv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-	myincol id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
-	myinitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
+	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
+	incolm id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
+	insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
 
 	oncmd gosub *notify, WM_NOTIFY
 %href
-myincol
-myinitem
+incolm
+insqlitem
 myindata
 mygetitem
-mydelitem
+dellv
 %group
 オブジェクト制御命令
 %note
@@ -108,7 +78,7 @@ mydelitem
 
 
 %index
-mydelitem
+dellv
 リストビューのアイテム全消去
 %prm
 p1
@@ -119,7 +89,7 @@ p1 : リストビューのオブジェクトID
 この命令を実行する前にgsel命令で操作先のウィンドウをアクティブにしておく必要があります。
 ^
 (参考)
-#deffunc mydelitem int h1
+#deffunc dellv int h1
 	sendmsg objinfo(h1, 2), 0x1009, 0, 0
 	return
 %sample
@@ -142,13 +112,13 @@ if (nmhdr(2) == LVN_COLUMNCLICK) {
 
 			gsel 2
 
-			mydelitem id_LVcpu
-			myinitem id_LVcpu, cpu, rec_cnum, col_cnum
+			dellv id_LVcpu
+			insqlitem id_LVcpu, cpu, rec_cnum, col_cnum
 			swbreak
 %href
-mycrelv
-myincol
-myinitem
+mylv
+incolm
+insqlitem
 myindata
 mygetitem
 %group
@@ -194,11 +164,11 @@ p3 : 取得文字列を受け取る配列変数
 
 	return
 %href
-mycrelv
-myincol
-myinitem
+mylv
+incolm
+insqlitem
 myindata
-mydelitem
+dellv
 %group
 オブジェクト制御命令
 %note
@@ -207,7 +177,7 @@ mydelitem
 
 
 %index
-myincol
+incolm
 リストビューにカラムを個別指定で追加
 %prm
 p1,p2,p3,p4,p5
@@ -249,18 +219,18 @@ sql_open db
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
 
-	mycrelv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-	myincol id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
-	myinitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
+	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
+	incolm id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
+	insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
 
 
 	oncmd gosub *notify, WM_NOTIFY
 %href
-mycrelv
-myinitem
+mylv
+insqlitem
 myindata
 mygetitem
-mydelitem
+dellv
 %group
 オブジェクト制御命令
 %note
@@ -279,7 +249,7 @@ p3 : カラムの数
 p4(75) : カラムの幅(整数値)
 p5(0) : スタイル
 %inst
-カラム幅を個別指定できるmyincol命令のデメリットを補うためのものです。
+カラム幅を個別指定incolmcol命令のデメリットを補うためのものです。
 ^
 p1で指定したリストビューにカラムを設置します。
 p2は文字列型の1次元配列変数でなければなりません。
@@ -314,18 +284,18 @@ sql_open db
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
 
-	mycrelv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
+	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
 		myincol2 id_LVcpu, col_clis, col_cnum, 75	//カラムを同じ幅で設置
-		myinitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
+		insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
 
 
 	oncmd gosub *notify, WM_NOTIFY
 %href
-mycrelv
-myinitem
+mylv
+insqlitem
 myindata
 mygetitem
-mydelitem
+dellv
 %group
 オブジェクト制御命令
 %note
@@ -379,17 +349,17 @@ sql_open db
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
 
-	mycrelv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-	myincol id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
-	myinitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
+	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
+	incolm id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
+	insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
 
 
 	oncmd gosub *notify, WM_NOTIFY
 %href
-mycrelv
-myincol
-myinitem
-mydelitem
+mylv
+incolm
+insqlitem
+dellv
 mygetitem
 %group
 オブジェクト制御命令
@@ -399,7 +369,7 @@ mygetitem
 
 
 %index
-myinitem
+insqlitem
 リストビューにアイテム追加
 %prm
 p1,p2,p3,p4
@@ -416,7 +386,7 @@ p3で指定したレコードの数だけレコードの追加を行なうマクロ形式の命令です。
 
 
 (参考)
-#define global myinitem(%1,%2,%3,%4)\
+#define global insqlitem(%1,%2,%3,%4)\
 	i = 0\
 	: repeat %3\
 	: InsertListViewItem %1, i, %2(i * %4)\
@@ -443,18 +413,18 @@ sql_open db
 	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
 
 
-	mycrelv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-	myincol id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
-	myinitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
+	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
+	incolm id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
+	insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
 
 
 	oncmd gosub *notify, WM_NOTIFY
 %href
-mycrelv
-myincol
+mylv
+incolm
 myindata
 mygetitem
-mydelitem
+dellv
 %group
 オブジェクト制御命令
 %note

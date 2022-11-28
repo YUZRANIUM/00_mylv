@@ -1327,6 +1327,7 @@ body,
 .task-list-item-checkbox {
     margin-left: -20px;
     vertical-align: middle;
+    pointer-events: none;
 }
 </style>
         
@@ -1355,10 +1356,10 @@ body,
 <h2 id="特徴">特徴</h2>
 <ul>
 <li>
-<p>リストビューの設置部分に関しては<strong>アイテム数によらず３行で指定レコード（アイテム）全てを設置可能</strong></p>
+<p>リストビューの設置部分に関しては <strong>アイテム数によらず３行で指定レコード（アイテム）全てを設置可能</strong></p>
 </li>
 <li>
-<p>整数、実数、文字列をすべて<strong>文字列型の1次元配列変数</strong>として扱う</p>
+<p>整数、実数、文字列をすべて <strong>文字列型の1次元配列変数</strong> として扱う<br>（※ver 0.30から2次元配列変数も扱えるようになりました）</p>
 </li>
 <li>
 <p>内部では文字列型の1次元配列変数として扱っているので、<strong>CSVも変換することで対応可能</strong></p>
@@ -1416,7 +1417,67 @@ body,
 <h2 id="追加命令">追加命令</h2>
 <details>
 <summary>追加される命令一覧</summary>
-<p><img src="https://user-images.githubusercontent.com/83401251/195515826-3340f36b-06f3-4b28-acfb-35debe2e14dd.png" alt="mylv11"></p>
+<pre><code class="language-c">
+<span class="hljs-comment">// リストビュー設置</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// %1,%2 : Xサイズ,Yサイズ</span>
+<span class="hljs-comment">// %3 : オブジェクトハンドルを受け取る変数</span>
+    mylv x, y, objhwnd_var
+
+
+<span class="hljs-comment">// リストビューにカラム追加1</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// %1    : 設置したリストビューのオブジェクトハンドル</span>
+<span class="hljs-comment">// %2    : カラムを格納した配列変数</span>
+<span class="hljs-comment">// %3    : カラムの数</span>
+<span class="hljs-comment">// %4    : カラムの幅(整数型の配列変数)</span>
+<span class="hljs-comment">// %5(0) : 0=左揃え / 1=右揃え / 2=中央揃え</span>
+    incolm objhwnd_var, colmun_list, colmun_num, colmun_width
+
+
+<span class="hljs-comment">// リストビューにカラム追加2</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// %1     : 設置したリストビューのオブジェクトハンドル</span>
+<span class="hljs-comment">// %2     : カラムを格納した配列変数</span>
+<span class="hljs-comment">// %3     : カラムの数</span>
+<span class="hljs-comment">// %4(75) : カラムの幅(整数)</span>
+<span class="hljs-comment">// %5(0)  : 0=左揃え / 1=右揃え / 2=中央揃え</span>
+    incolm2 objhwnd_var, colmun_list, colmun_num, num
+
+
+<span class="hljs-comment">// リストビューにレコードを追加 (1次元配列変数)</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// %1 : 設置したリストビューのオブジェクトハンドル</span>
+<span class="hljs-comment">// %2 : レコードを格納した配列変数</span>
+<span class="hljs-comment">// %3 : レコードの数</span>
+<span class="hljs-comment">// %4 : カラムの数</span>
+    inlvitem objhwnd_var, rec_array, rec_num, colmun_num
+
+
+<span class="hljs-comment">// リストビューにレコードを追加 (SQLele, 2次元配列変数に対応)</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// %1 : 設置したリストビューのオブジェクトハンドル</span>
+<span class="hljs-comment">// %2 : レコードを格納した配列変数</span>
+    insqlitem objhwnd_var, <span class="hljs-built_in">array</span>
+
+<span class="hljs-comment">// リストビューのアイテムの文字列取得</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// p1 : リストビューのオブジェクトハンドル</span>
+<span class="hljs-comment">// p2 : カラムの数</span>
+<span class="hljs-comment">// p3 : 取得文字列を格納する文字列型変数</span>
+<span class="hljs-comment">// p4 : 配列変数のバッファサイズ</span>
+<span class="hljs-comment">// p5 : 区切り文字</span>
+    getlvitem objhwnd_var, colmun_num, getvar, baffer_num
+
+
+<span class="hljs-comment">// リストビュー削除</span>
+<span class="hljs-comment">//</span>
+<span class="hljs-comment">// p1    : リストビューのオブジェクトハンドル</span>
+<span class="hljs-comment">// p2    : 削除するアイテム,カラムのインデックス</span>
+<span class="hljs-comment">// p3(0) : 削除するタイプ(0 = アイテム, 1 = カラム, 2 = アイテムの全削除)</span>
+    dellv objhwnd_var, index, type
+
+</code></pre>
 </details>
 <br>
 <details>
@@ -1480,35 +1541,76 @@ body,
 <summary>サンプルファイル（一部）</summary>
 <ul>
 <li>
-<h3 id="用意しなければならない変数一覧">用意しなければならない変数一覧</h3>
+<h3 id="sqlitesqlele連携によるデータの取得例">SQLite(sqlele)連携によるデータの取得（例）</h3>
 </li>
 </ul>
-<table>
-<thead>
-<tr>
-<th><img src="https://user-images.githubusercontent.com/83401251/195087503-a21b35ae-8bbe-4cf2-99f7-1ad34fb70cf7.png" alt="mylv04"></th>
-<th style="text-align:left">ネストしたrepeat文をマクロ登録しているため、どうしても変数が多くなってしまいます。<br><code>myincol2</code>命令を使用すればカラムの幅を個別指定せずに済みます。</th>
-</tr>
-</thead>
-</table>
+<pre><code class="language-cpp">    sql_open db
+    sql_q <span class="hljs-string">&quot;SELECT * FROM MyCPU;&quot;</span>, cpu   <span class="hljs-comment">// 全レコードをレコードセット変数で取得</span>
+    sql_close
+
+
+    col_clist = <span class="hljs-built_in">sql_collist</span>(<span class="hljs-string">&quot;,&quot;</span>, cpu)   <span class="hljs-comment">// カラムの取得</span>
+    split col_clist, <span class="hljs-string">&quot;,&quot;</span>, col_clist     <span class="hljs-comment">// カラムを配列に</span>
+</code></pre>
 <ul>
 <li>
-<h3 id="sqlitesqlele連携によるデータの取得例">SQLite(sqlele)連携によるデータの取得（例）</h3>
-<p><img src="https://user-images.githubusercontent.com/83401251/195269325-391d6fef-6487-4901-886e-87942e5e50c0.png" alt="mylv05"></p>
-</li>
-<li>
 <h3 id="リストビュー設置部分">リストビュー設置部分</h3>
-<p><img src="https://user-images.githubusercontent.com/83401251/195269809-71fb2901-e363-45cb-add4-ba08379503cf.png" alt="mylv06"></p>
-</li>
-<li>
-<h3 id="レコードの取得">レコードの取得</h3>
-<p><img src="https://user-images.githubusercontent.com/83401251/195270442-530d382c-0796-4e5a-af5d-603a8bf2f56f.png" alt="mylv07"></p>
-</li>
-<li>
-<h3 id="リストビューの並べ替えsqliteによるdb操作を利用">リストビューの並べ替え（SQLiteによるDB操作を利用）</h3>
-<p><img src="https://user-images.githubusercontent.com/83401251/195272012-384d142b-6de9-4237-a3a1-e46587d02ca6.png" alt="mylv08"></p>
 </li>
 </ul>
+<pre><code class="language-cpp">    mylv <span class="hljs-number">400</span>, <span class="hljs-number">300</span>, hLVcpu                           <span class="hljs-comment">// リストビュー設置</span>
+    incolm hLVcpu, col_clist, <span class="hljs-built_in">length</span>(cpu), col_cw   <span class="hljs-comment">// カラムの追加</span>
+    insqlitem hLVcpu, cpu                           <span class="hljs-comment">// 全レコードの追加</span>
+</code></pre>
+<ul>
+<li>
+<h3 id="レコードの取得">レコードの取得</h3>
+</li>
+</ul>
+<pre><code class="language-cpp">*getlvitem
+    sdim getlist, <span class="hljs-number">1024</span>
+    sdim syowlist, <span class="hljs-number">1024</span>
+
+    getlvitem hLVcpu, <span class="hljs-built_in">length</span>(cpu), getlist, <span class="hljs-number">1024</span>
+
+    array2note syowlist, getlist
+
+    dialog syowlist, <span class="hljs-number">0</span>, <span class="hljs-string">&quot;Get items&quot;</span>
+    <span class="hljs-keyword">return</span>
+</code></pre>
+<ul>
+<li>
+<h3 id="リストビューの並べ替えsqliteによるdb操作を利用">リストビューの並べ替え（SQLiteによるDB操作を利用）</h3>
+</li>
+</ul>
+<pre><code class="language-cpp">*lvnotify
+    <span class="hljs-comment">// リストビューのオブジェクトハンドルとウィンドウメッセージ通知コード取得</span>
+    dupptr NMHDR, lparam, <span class="hljs-number">12</span>, <span class="hljs-number">4</span>  :  hLV = <span class="hljs-built_in">NMHDR</span>(<span class="hljs-number">0</span>)
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">NMHDR</span>(<span class="hljs-number">2</span>) == LVN_COLUMNCLICK) {  <span class="hljs-comment">//通知コードがカラムクリックだった場合に並べ替え</span>
+
+        <span class="hljs-comment">// クリックされたカラムインデックス取得</span>
+        dupptr NMLV, lparam, <span class="hljs-number">40</span>, <span class="hljs-number">4</span>  :  index = <span class="hljs-built_in">NMLV</span>(<span class="hljs-number">4</span>)
+
+        sql_open db     <span class="hljs-comment">// DB OPEN</span>
+
+        <span class="hljs-keyword">switch</span> hLV          <span class="hljs-comment">// オブジェクトハンドルで分岐 -&gt; 複数のリストビュー対応</span>
+            <span class="hljs-keyword">case</span> hLVcpu
+
+                sdim cpu, <span class="hljs-number">2048</span>          <span class="hljs-comment">// レコードセット変数の初期化</span>
+                swc = swc * <span class="hljs-number">-1</span>          <span class="hljs-comment">// 昇降順の切り替え</span>
+                <span class="hljs-keyword">if</span> (swc == <span class="hljs-number">-1</span>) {sqsc = <span class="hljs-string">&quot; DESC;&quot;</span>} <span class="hljs-keyword">else</span> {sqsc = <span class="hljs-string">&quot; ASC;&quot;</span>}
+
+                sql_q <span class="hljs-string">&quot;SELECT * FROM MyCPU ORDER BY &quot;</span> + <span class="hljs-built_in">col_clist</span>(index) + sqsc, cpu
+
+                dellv hLVcpu, <span class="hljs-number">0</span>, <span class="hljs-number">2</span>      <span class="hljs-comment">// リストビューの全アイテム消去</span>
+                insqlitem hLVcpu, cpu   <span class="hljs-comment">// 全データをリストビューに追加</span>
+
+                swbreak
+        swend
+        sql_close       <span class="hljs-comment">// DB CLOSE</span>
+    }
+    <span class="hljs-keyword">return</span>
+</code></pre>
 </details>
 <br>
 <h2 id="必要環境">必要環境</h2>
@@ -1524,8 +1626,8 @@ body,
 <h2 id="開発環境">開発環境</h2>
 <ul>
 <li>Windows11 Pro 22H2 x64</li>
-<li>Visual Studio Code</li>
-<li>HSP3.7beta3</li>
+<li>Visual Studio Code 1.73.1</li>
+<li>HSP3.7beta4</li>
 </ul>
 <hr>
 <p>本ソフトウェアおよび関連文書のファイル（以下「ソフトウェア」）の複製を取得するすべての人に対し、ソフトウェアを無制限に扱うことを無償で許可します。</p>
@@ -1533,6 +1635,39 @@ body,
 <p>ソフトウェアは「現状のまま」で、明示であるか暗黙であるかを問わず、何らの保証もなく提供されます。ここでいう保証とは、商品性、特定の目的への適合性、および権利非侵害についての保証も含みますが、それに限定されるものではありません。</p>
 <p>作者または著作権者は、契約行為、不法行為、またはそれ以外であろうと、ソフトウェアに起因または関連し、あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求、損害、その他の義務について何らの責任も負わないものとします。</p>
 <h2 id="更新履歴">更新履歴</h2>
+<h3 id="ver-030">ver 0.30</h3>
+<p>2022/11/28</p>
+<ul>
+<li>オブジェクトIDを廃止. 全てオブジェクトハンドルを指定するようにパラメータの削減.</li>
+</ul>
+<!--  -->
+<ul>
+<li>リストビュー設置命令<code>mylv命令</code>の設置後、システム変数<code>stat</code>にオブジェクトIDが代入されるように</li>
+</ul>
+<!--  -->
+<ul>
+<li>リストビューにアイテムを追加する命令 <code>insqlitem命令</code>を新規追加
+<ul>
+<li>2次元配列変数に対応可能となったのでsqleleのレコードセット変数をそのまま扱える</li>
+</ul>
+</li>
+</ul>
+<!--  -->
+<ul>
+<li>アイテムの文字列取得命令を改良。
+<ul>
+<li><code>getlvitem命令</code>で区切り文字を選択できるように（初期値は &quot;,&quot;）</li>
+</ul>
+</li>
+</ul>
+<!--  -->
+<ul>
+<li>従来の削除系の命令<code>mydelitem命令</code>を削除。
+<ul>
+<li><code>dellv命令</code>を新規追加し、アイテム、カラム、全アイテムの3つから削除モードを選べるように.</li>
+</ul>
+</li>
+</ul>
 <h3 id="ver-020">ver 0.2.0</h3>
 <p>2022/10/25 : サンプルファイル及びヘルプファイルの修正</p>
 <h3 id="ver-014">ver 0.1.4</h3>
