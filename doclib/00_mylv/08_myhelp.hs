@@ -20,236 +20,245 @@ https://github.com/YUZRANIUM/00_mylv
 HSPの裏技??http://chokuto.ifdef.jp/urawaza/index.html
 %dll
 00_mylv
-%type
-ユーザー定義命令
 %ver
 0.30
 %port
 Win
+%note
+00_mylv.hspとuser32.asをインクルードすること
+
+
+;===============================================================================
 
 
 %index
 mylv
 リストビュー設置
 %prm
-p1,p2,p3,p4
+p1,p2,p3
 p1,p2 : リストビューのXサイズ、Yサイズ
-p3 : オブジェクトIDを受け取る変数
-p4 : オブジェクトハンドルを受け取る変数
+p3 : オブジェクトハンドルを受け取る変数
 %inst
 この命令はリストビューをカレントポジションに設置するものです。
+^
 p1,p2でリストビューのXサイズ、Yサイズを指定します。
-p3とp4はご自身で整数型変数を用意する必要があります。
-オブジェクトIDは後の命令で、オブジェクトハンドルはリストビューのレコードの並べ替えに必要です。
+p3はご自身で整数型変数を用意する必要があります。
+^
+リストビュー設置後、システム変数statにオブジェクトIDが代入されます。
 この後に列（カラム）を設置する命令とアイテムを設置する命令を行う必要があります。
 %sample
 ...
+column_w = 60, 60, 110, 85, 80, 80  ; カラムの幅
+
 sql_open db
-	sql_q "SELECT * FROM MyCPU;"
+    sql_q "SELECT * FROM MyCPU;", cpu
+sql_close
 
-		rec_cnum = stat			//レコードの数
+col_clis = sql_collist(",", cpu)    ; カラムリスト
+split col_clis, ",", col_clis       ; カラムのリストを配列変数に
 
-		col_cnum = length(tmparr)	//カラムの数
+mylv 550, 280, hLVcpu                           ; リストビュー設置
+incolm LVcpu, col_clis, length(cpu), column_w   ; 列（カラム）の設置
+insqlitem LVcpu, cpu                            ; アイテムの設置
 
-		col_clis = sql_collist()	//カラムリスト
-
-		split col_clis, ",", col_clis	//カラムのリストを配列変数に
-
-	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
-
-	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
-
-	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-	incolm id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
-	insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
-
-	oncmd gosub *notify, WM_NOTIFY
 %href
 incolm
+incolm2
 insqlitem
-myindata
-mygetitem
+getlvitem
 dellv
 %group
 オブジェクト制御命令
-%note
-00_mylv.hspとuser32.asをインクルードすること
+%type
+ユーザー定義命令
 
+
+;===============================================================================
 
 
 %index
 dellv
-リストビューのアイテム全消去
+リストビュー消去
 %prm
-p1
-p1 : リストビューのオブジェクトID
+p1,p2,p3
+p1    : リストビューのオブジェクトハンドル
+p2(0) : 削除するタイプ(0 = アイテム, 1 = カラム, 2 = アイテムの全削除)
+p3    : 削除するアイテム,カラムのインデックス
 %inst
-指定されたリストビューの全アイテムを削除します。
+指定されたリストビューに関する要素の削除を行います。
 ^
-この命令を実行する前にgsel命令で操作先のウィンドウをアクティブにしておく必要があります。
+p1にはリストビューのオブジェクトハンドルを指定して下さい。
+p2には削除タイプを指定して下さい。
+p3には削除したいアイテムもしくはカラムのインデックス（0～）を指定して下さい。
 ^
-(参考)
-#deffunc dellv int h1
-	sendmsg objinfo(h1, 2), 0x1009, 0, 0
-	return
+p2に指定できる削除タイプは以下になります
+タイプ |    削除対象
+------------------------
+    0  | アイテム
+    1  | カラム
+    2  | アイテムの全削除
+^
+p2の削除タイプで2（アイテムの全消去）を指定した場合、p3にインデックスを指定する必要はありません。
+
+
 %sample
 //リストビュー昇降順の処理
 *notify
 dupptr nmhdr, lparam, 12, 4 : tabhwnd = nmhdr(0)
 if (nmhdr(2) == LVN_COLUMNCLICK) {
-	dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
+    dupptr nmlv, lparam, 40, 4 : index = nmlv(4)
 
-	sql_open db
-	switch tabhwnd
-		/***CPU***/
-		case hLVcpu
-			sdim cpu, 2048
-			swc = swc * -1
-			if swc == -1 : sqsc = " DESC;"   :   else : sqsc = " ASC;"
+    sql_open db
+    switch tabhwnd
 
-			sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + sqsc
-				myindata rec_cnum, col_cnum, col_clis, cpu
+        case hLVcpu
+            sdim cpu, 2048
+            swc = swc * -1
+            if (swc == -1) {sqsc = " DESC;"} else {sqsc = " ASC;"}
 
-			gsel 2
-
-			dellv id_LVcpu
-			insqlitem id_LVcpu, cpu, rec_cnum, col_cnum
-			swbreak
+            sql_q "SELECT * FROM MyCPU ORDER BY " + col_clis(index) + sqsc, cpu
+            dellv id_LVcpu, 2
+            insqlitem id_LVcpu, cpu
+            swbreak
 %href
-mylv
 incolm
+incolm2
 insqlitem
-myindata
-mygetitem
 %group
 オブジェクト制御命令
-%note
-00_mylv.hspとuser32.asをインクルードすること
+%type
+ユーザー定義命令
 
+
+;===============================================================================
 
 
 %index
-mygetitem
+getlvitem
 リストビューのアイテム取得
 %prm
-p1,p2,p3
-p1 : リストビューのオブジェクトID
-p2 : カラムの数
-p3 : 取得文字列を受け取る配列変数
+p1,p2,p3,p4,p5
+p1      : リストビューのオブジェクトハンドル
+p2      : カラムの数
+p3      : 取得文字列を受け取る配列変数
+p4      : 配列変数のバッファサイズ
+p5(",") : 区切り文字
 %inst
-選択されたリストビューのアイテムを文字列として取得し、配列変数として出力する命令です。
+選択されたリストビューのアイテムを文字列として取得し、1次元配列変数として出力する命令です。
 ^
-取得文字列を受け取る配列変数はご自身であらかじめ用意しておく必要があります。
+p1にはリストビューのオブジェクトハンドルを指定して下さい。
+p2にはカラムの数を指定して下さい。sqlele併用時はlength()関数にレコードセット変数を指定することでカラムの数を取得できます。
+p3には文字列型の配列変数を指定して下さい。
+p4にはp3で指定した配列変数のバッファサイズを指定して下さい。
+p5には取得したレコードをカラムごとに区切るための区切り用の文字列を指定して下さい。初期値では","となっています。
+
 ^
 また、複数選択にも対応しているため規模にもよりますが、取得文字列を受け取る配列変数はそのバッファサイズを大きめに確保してください。
 %sample
 
 //選択したリストアイテムの取得
 *getitem
-	gsel 1
+    gsel 1
 
-	sdim infonoteC, 1024  :  sdim infotext1, 1024
-	sdim infonoteG, 1024  :  sdim infotext2, 1024
-	sdim infonoteR, 1024  :  sdim infotext3, 1024
+    sdim getlistC, 1024  :  sdim syowlist1, 1024
+    sdim getlistG, 1024  :  sdim syowlist2, 1024
+    sdim getlistR, 1024  :  sdim syowlist3, 1024
 
-	mygetitem id_cpumoni, 6, infonoteC
-	mygetitem id_gpumoni, 6, infonoteG
-	mygetitem id_rommoni, 6, infonoteR
+    getlvitem hLVcpu, length(cpu), getlistC, 1024
+    getlvitem hLVgpu, 6, getlistG, 1024
+    getlvitem hLVrom, 6, getlistR, 1024
 
-	infotext1 += "\n\n---CPU---" + "\n" + infonoteC
-	infotext2 += "\n\n---GPU---" + "\n" + infonoteG
-	infotext3 += "\n\n---ROM---" + "\n" + infonoteR
+    array2note syowlist1, getlistC
+    array2note syowlist2, getlistG
+    array2note syowlist3, getlistR
 
-	dialog "購入リスト" + infotext1 + infotext2 + infotext3, 0, "購入確認"
+    dialog "購入リスト" + syowlist1 + syowlist2 + syowlist3, 0, "購入確認"
 
-	return
+    return
 %href
 mylv
 incolm
+incolm2
 insqlitem
-myindata
-dellv
+length
 %group
 オブジェクト制御命令
-%note
-00_mylv.hspをインクルードすること
+%type
+ユーザー定義命令
 
+
+;===============================================================================
 
 
 %index
 incolm
-リストビューにカラムを個別指定で追加
+カラムを個別指定追加
 %prm
 p1,p2,p3,p4,p5
-p1 : 設置したリストビューのオブジェクトハンドル
-p2 : カラムを格納した配列変数
-p3 : カラムの数
-p4 : カラムの幅を格納した配列変数
+p1    : 設置したリストビューのオブジェクトハンドル
+p2    : カラムを格納した配列変数
+p3    : カラムの数
+p4    : カラムの幅を格納した配列変数
 p5(0) : スタイル
 %inst
 この命令は、カラム幅を個別指定してリストビューを設置するものです。
 ^
 p1で指定したリストビューにカラムを設置します。
-p2は文字列型、p4は整数型の1次元配列変数でなければなりません。
+p2は文字列型、
+p4は整数型の1次元配列変数でなければなりません。
 p5は左揃え、右揃え、中央揃えを指定することが出来ます。省略時は左揃えとなります。
 ^
-	値	:	動作
-	-----------------------
-	0	:	左揃え
-	1	:	右揃え
-	2	:	中央揃え
+    値  :   動作
+    -----------------------
+    0   :   左揃え
+    1   :   右揃え
+    2   :   中央揃え
 ^
 この命令は、カラムの数が少なく、各アイテム幅の差が大きい場合に有効です。
 ^
 %sample
 ...
-sql_open db
-	sql_q "SELECT * FROM MyCPU;"
+    column_w = 60, 60, 110, 85, 80, 80  ; カラムの幅
 
-		rec_cnum = stat			//レコードの数
+    sql_open db
+    sql_q "SELECT * FROM MyCPU;", cpu
+    sql_close
 
-		col_cnum = length(tmparr)	//カラムの数
-
-		col_clis = sql_collist()	//カラムリスト
-
-		split col_clis, ",", col_clis	//カラムのリストを配列変数に
-
-	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
-
-	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
+    col_clis = sql_collist(",", cpu)    ; カラムリスト
+    split col_clis, ",", col_clis       ; カラムのリストを配列変数に
 
 
-	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-	incolm id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
-	insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
+    mylv 550, 280, hLVcpu                           ; リストビュー設置
+    incolm hLVcpu, col_clis, length(cpu), column_w  ; 列（カラム）の設置
+    insqlitem hLVcpu, cpu                           ; アイテムの設置
 
-
-	oncmd gosub *notify, WM_NOTIFY
 %href
 mylv
+incolm
+incolm2
 insqlitem
-myindata
-mygetitem
 dellv
 %group
 オブジェクト制御命令
-%note
-00_mylv.hspとuser32.asをインクルードすること
+%type
+ユーザー定義命令
 
+
+;===============================================================================
 
 
 %index
-myincol2
-リストビューにカラムを同一指定で追加
+incolm2
+カラムを同一指定追加
 %prm
 p1,p2,p3,p4,p5
-p1 : 設置したリストビューのオブジェクトハンドル
-p2 : カラムを格納した配列変数
-p3 : カラムの数
+p1     : 設置したリストビューのオブジェクトハンドル
+p2     : カラムを格納した配列変数
+p3     : カラムの数
 p4(75) : カラムの幅(整数値)
-p5(0) : スタイル
+p5(0)  : スタイル
 %inst
-カラム幅を個別指定incolmcol命令のデメリットを補うためのものです。
+カラム幅を個別指定incolm命令のデメリットを補うためのものです。
 ^
 p1で指定したリストビューにカラムを設置します。
 p2は文字列型の1次元配列変数でなければなりません。
@@ -258,260 +267,108 @@ p2は文字列型の1次元配列変数でなければなりません。
 省略可能で、省略時は75となります。
 ^
 p5は左揃え、右揃え、中央揃えを指定することが出来ます。省略時は左揃えとなります。
-	値	:	動作
-	-----------------------
-	0	:	左揃え
-	1	:	右揃え
-	2	:	中央揃え
+    値  :   動作
+    -----------------------
+    0   :   左揃え
+    1   :   右揃え
+    2   :   中央揃え
 ^
 この命令は、カラムの数が多く、各アイテム幅の差がほとんどない場合に有効です。
 ^
 %sample
 ...
-sql_open db
-	sql_q "SELECT * FROM MyCPU;"
+    sql_open db
+    sql_q "SELECT * FROM MyCPU;", cpu
+    sql_close
 
-		rec_cnum = stat			//レコードの数
-
-		col_cnum = length(tmparr)	//カラムの数
-
-		col_clis = sql_collist()	//カラムリスト
-
-		split col_clis, ",", col_clis	//カラムのリストを配列変数に
-
-	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
-
-	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
+    col_clis = sql_collist(",", cpu)    ; カラムリスト
+    split col_clis, ",", col_clis       ; カラムのリストを配列変数に
 
 
-	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-		myincol2 id_LVcpu, col_clis, col_cnum, 75	//カラムを同じ幅で設置
-		insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
-
-
-	oncmd gosub *notify, WM_NOTIFY
-%href
-mylv
-insqlitem
-myindata
-mygetitem
-dellv
-%group
-オブジェクト制御命令
-%note
-00_mylv.hspとuser32.asをインクルードすること
-
-
-
-%index
-myindata
-SQLele(SQLite)からデータ取得
-%prm
-p1,p2,p3,p4
-p1 : レコードの数
-p2 : カラムの数
-p3 : カラムを格納した配列変数
-p4 : レコードを受け取る配列変数
-%inst
-文字列型の1次配列を出力するマクロ形式の命令です。
-sqlele.hspをインクルードしている場合にのみ使うことができます。
-^
-sqleleのsql_q命令後に各種数値を取得してください。その値をもとにレコードを文字列型の1次元配列変数として与えられた変数に格納していきます。
-^
-レコードを受け取るための配列変数はご自身であらかじめ用意しておく必要があります。また、規模にもよりますが、レコードを受け取る配列変数はそのバッファサイズを大きめに確保してください。
-
-(参考)
-#define global myindata(%1,%2,%3,%4)\
-	repeat %1\
-	: j = 0\
-	: repeat %2\
-	: %4 += "" + sql_v(%3(j)) + ","\
-	: j++\
-	: loop\
-	: sql_next\
-	: loop\
-	: split %4,",",%4
-%sample
-...
-sql_open db
-	sql_q "SELECT * FROM MyCPU;"
-
-		rec_cnum = stat			//レコードの数
-
-		col_cnum = length(tmparr)	//カラムの数
-
-		col_clis = sql_collist()	//カラムリスト
-
-		split col_clis, ",", col_clis	//カラムのリストを配列変数に
-
-	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
-
-	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
-
-
-	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-	incolm id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
-	insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
-
-
-	oncmd gosub *notify, WM_NOTIFY
+    mylv 550, 280, hLVcpu                     ; リストビュー設置
+    incolm2 hLVcpu, col_clis, length(cpu), 75 ; 列（カラム）の設置
+    insqlitem hLVcpu, cpu                     ; アイテムの設置
 %href
 mylv
 incolm
 insqlitem
 dellv
-mygetitem
 %group
 オブジェクト制御命令
-%note
-00_mylv.hspとsqlele.hspをインクルードすること
+%type
+ユーザー定義命令
 
+
+;===============================================================================
 
 
 %index
-insqlitem
-リストビューにアイテム追加
+inlvitem
+アイテム追加
 %prm
 p1,p2,p3,p4
-p1 : 設置したリストビューのオブジェクトID
-p2 : アイテムを格納した配列変数
+p1 : 設置したリストビューのオブジェクトハンドル
+p2 : レコードを格納した変数（1次元配列変数）
 p3 : レコードの数
 p4 : カラムの数
 %inst
-p2でアイテムを格納した文字列型の1次元配列変数を、p4でカラムの数をそれぞれ指定します。
-p3で指定したレコードの数だけレコードの追加を行なうマクロ形式の命令です。
-マクロによりネストしたrepeatでアイテムを連続して追加していきます。
-^
-また、CSV形式のファイルも文字列型の1次元配列にすることで対応できます。
+p1にはリストビューのオブジェクトハンドルを指定して下さい。
 
 
-(参考)
-#define global insqlitem(%1,%2,%3,%4)\
-	i = 0\
-	: repeat %3\
-	: InsertListViewItem %1, i, %2(i * %4)\
-	: repeat %4 - 1, 1\
-	: SetListViewItemText %1, i, cnt, %2(cnt + (i * %4))\
-	: loop\
-	: i++\
-	: loop
+
 %sample
-...
-sql_open db
-	sql_q "SELECT * FROM MyCPU;"
 
-		rec_cnum = stat			//レコードの数
-
-		col_cnum = length(tmparr)	//カラムの数
-
-		col_clis = sql_collist()	//カラムリスト
-
-		split col_clis, ",", col_clis	//カラムのリストを配列変数に
-
-	myindata rec_cnum, col_cnum, col_clis, cpu	//データのインプット
-
-	column_w = 60, 60, 110, 85, 80, 80		//カラムの幅
-
-
-	mylv 550, 280, id_LVcpu, hLVcpu		//リストビュー設置
-	incolm id_LVcpu, col_clis, col_cnum, column_w	//列（カラム）の設置
-	insqlitem id_LVcpu, cpu, rec_cnum, col_cnum	//アイテムの設置
-
-
-	oncmd gosub *notify, WM_NOTIFY
-%href
-mylv
-incolm
-myindata
-mygetitem
-dellv
 %group
 オブジェクト制御命令
-%note
-00_mylv.hspとuser32.asをインクルードすること
+%type
+ユーザー定義命令
+%href
+insqlitem
+incolm
+incolm2
 
+
+;===============================================================================
 
 
 %index
-SetParent
-指定されたウィンドウの親ウィンドウを変更します。
-%group
-Win32API
+insqlitem
+アイテム追加2
 %prm
 p1,p2
-p1 : 子ウィンドウのハンドル
-p2 : 新しい親ウィンドウのハンドル
+p1 : 設置したリストビューのオブジェクトハンドル
+p2 : レコードセット変数（2次元配列変数）
 %inst
-p1で指定したウィンドウをp2で指定したウィンドウの子ウィンドウとします。
+この命令はsqleleのレコードセット変数のデータをリストビューにアイテムとして追加するものです。
 ^
-p1には子ウィンドウとするウィンドウのハンドルを指定してください。
-p2に親ウィンドウとするウィンドウのハンドルを指定します。
+p1にはリストビューのオブジェクトハンドルを指定して下さい。
+p2にはsqleleのレコードセット変数を指定して下さい。
 ^
-また、子ウィンドウの親ウィンドウを変更する SetParent関数の前にSetWindowLong関数を用いて、WS_CHILDスタイルを追加しなくてはなりません。
+
+^
 %sample
-	#include "user32.as"
-	#define WS_CHILD 0x40000000
+...
+    column_w = 60, 60, 110, 85, 80, 80  ; カラムの幅
 
-	screen 0, 500, 300, 2
-	hWindow = hwnd			    //親ウィンドウとするウィンドウのハンドルを取得
+    sql_open db
+    sql_q "SELECT * FROM MyCPU;", cpu
+    sql_close
 
+    col_clis = sql_collist(",", cpu)    ; カラムリスト
+    split col_clis, ",", col_clis       ; カラムのリストを配列変数に
 
-	bgscr 1, 500, 300, 2
+    mylv 550, 280, hLVcpu                           ; リストビュー設置
+    incolm hLVcpu, col_clis, length(cpu), column_w  ; 列（カラム）の設置
+    insqlitem hLVcpu, cpu                           ; アイテムの設置
 
-	SetWindowLong hwnd, -16, WS_CHILD   //ウィンドウスタイルにWS_CHILDを追加
-	SetParent hwnd, hWindow		    //子ウィンドウに変更
-^
 %href
-SetWindowLong
-hwnd
-%note
-user32.asをインクルードすること
-%index
-SetWindowLong
-指定されたウィンドウの属性を変更します
+inlvitem
+incolm
+incolm2
 %group
-Win32API
-%prm
-p1,p2,p3
-p1 : 属性を変更するウィンドウのハンドル
-p2 : 変更する属性の指定
-p3 : 新しい属性の指定
-%inst
-現在のウィンドウの属性を変更します。
-^
-p1には属性を変更したいウィンドウのウィンドウハンドルを指定してください。通常、hwndで指定します。
-^
-p2には以下のいずれかを指定してください。
-		値			   :		内容
-	---------------------------------------------------------
-	  -4(GWL_WNDPROC)	   : ウィンドウプロシージャのアドレス
-	  -6(GWL_HINSTANCE)  : アプリケーションのインスタンスハンドル
-	-16(GWL_STYLE)	   : ウィンドウスタイル
-	-20(GWL_EXSTYLE)	   : 拡張ウィンドウスタイル
-	-21(GWL_USERDATA)	   : ウィンドウに関連付けられたアプリケーション定義の32ビット値
-	-12(GWL_ID)		   : ウィンドウID
-^
-基本的には-16(GWL_STYLE)や-20(GWL_EXSTYLE)しか使いません。また、これ以外の値や解説は省略させて頂きます。
-^
-p3には新しく設定する32ビット値を指定します。
-^
-また、子ウィンドウの親ウィンドウを変更する SetParent関数の前にSetWindowLong関数を用いて、WS_CHILDスタイルを追加しなくてはなりません。
-^
-%sample
-	#include "user32.as"
-	#define WS_CHILD 0x40000000
-
-	screen 0, 500, 300, 2
-	hWindow = hwnd
+オブジェクト制御命令
+%type
+ユーザー定義命令
 
 
-	bgscr 1, 500, 300, 2
-
-	SetWindowLong hwnd, -16, WS_CHILD
-	SetParent hwnd, hWindow
-^
-%href
-hwnd
-SetParent
-%note
-user32.asをインクルードすること
+;===============================================================================

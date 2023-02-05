@@ -21,13 +21,6 @@ SQLite(sqlele)との連携でより使いやすくなります。
 #ifndef __mylv__
 #define global __mylv__
 
-// user32.asをインクルードする必要がありますが、インクルードされなかった場合は
-// こちらがコンパイル時に有効になり、インクルードされます。
-// ですが、スクリプト側でのインクルードを推奨します。
-// (※インクルードガードですので二重インクルードにはなりません)
-// #ifndef __USER32__
-// #include "user32.as"
-// #endif // __USER32__
 
 #module "MyListView"
 
@@ -125,6 +118,7 @@ SQLite(sqlele)との連携でより使いやすくなります。
 	loop
 	return
 
+
 // リストビューにカラム追加1
 //
 // %1    : 設置したリストビューのオブジェクトハンドル
@@ -143,6 +137,7 @@ SQLite(sqlele)との連携でより使いやすくなります。
 	loop
 	return
 
+
 // リストビューにカラム追加2
 //
 // %1     : 設置したリストビューのオブジェクトハンドル
@@ -159,11 +154,16 @@ SQLite(sqlele)との連携でより使いやすくなります。
 //----------------------------------------------------------
 
 
-// リストビューに項目追加する内部命令
+// リストビューにアイテム追加する内部命令
 // %1 : 設置したリストビューのオブジェクトハンドル
 // %2 : 項目のインデックス
 // %3 : 追加する項目
 #deffunc local InsertListViewItem_ int p1, int p2, var p3
+
+	; この内部命令で追加されるアイテムを便宜上メインアイテムと呼んでいます
+	; リストビューで一番左端に位置するアイテムです
+	; サブアイテムはこのメインアイテムを元に追加されます
+	;
 	dim lvitem, 13
 	lvitem(0) = LVIF_TEXT
 	lvitem(1) = p2
@@ -172,15 +172,21 @@ SQLite(sqlele)との連携でより使いやすくなります。
 	return
 
 
-// リストビューの項目またはサブ項目テキスト設定する内部命令
+
+// リストビューのサブアイテム設定する内部命令
 #deffunc local SetListViewItemText_ int p1, int p2, int p3, var p4
+
+	; サブアイテムを追加します
+	; メインアイテムが存在していないと失敗します
+	;
 	dim lvitem, 13
 	lvitem(0) = LVIF_TEXT
 	lvitem(1) = p2
 	lvitem(2) = p3
 	lvitem(5) = varptr(p4)
 	sendmsg p1, LVM_SETITEM, 0, varptr(lvitem)
-	return
+	return stat
+
 
 
 // リストビューにレコードを追加(1次元配列変数)
@@ -189,8 +195,8 @@ SQLite(sqlele)との連携でより使いやすくなります。
 // %2 : レコードを格納した配列変数
 // %3 : レコードの数
 // %4 : カラムの数
-#deffunc inlvitem int p1, array p2, int p3, int p4
-	i = 0
+#deffunc inlv1item int p1, array p2, int p3, int p4
+	i = 0           ; （メイン）アイテムのインデックス
 	repeat p3
 		InsertListViewItem_@MyListView p1, i, p2(i * p4)
 		repeat p4 - 1, 1
@@ -201,12 +207,52 @@ SQLite(sqlele)との連携でより使いやすくなります。
 	return
 
 
-// リストビューにレコードを追加(SQLele専用:2次元配列変数に対応)
+
+
+// リストビューにレコードを追加(2次元配列変数に対応)
+//
+// %1 : 設置したリストビューのオブジェクトハンドル
+// %2 : レコードを格納した配列変数
+#deffunc inlv2item int p1, array p2
+
+	i = 0           ;  サブアイテムのインデックス
+	j = 0           ; （メイン）アイテムのインデックス
+
+	repeat length2(p2)
+		; リストビューで一番左端（＝カラムのインデックスが0）のアイテム（メインアイテム）
+		;
+		i = 0
+		InsertListViewItem_@MyListView p1, j, p2(i, j)
+		;
+		repeat length(p2)
+			; サブアイテム
+			;
+			SetListViewItemText_@MyListView p1, j, i, p2(i, j)
+			;
+			i++         ; 次のサブアイテムへ
+			;
+		loop
+		;
+		j++         ; 次のメインアイテムへ
+		;
+	loop
+
+	return
+
+
+
+// リストビューにレコードを追加(SQLele専用)
 //
 // %1 : 設置したリストビューのオブジェクトハンドル
 // %2 : レコードを格納した配列変数
 #deffunc insqlitem int p1, array p2
-	j = 0
+
+	i = 0           ;  サブアイテムのインデックス
+	j = 0           ; （メイン）アイテムのインデックス
+	; sqleleのレコードセット変数はアイテムデータの最後にカラム名が格納されています
+	; カラム名までアイテムとしてリストビューに追加しないよう -1 としています
+	; それ以外は inlv2item命令 と変わりありません
+	;
 	repeat length2(p2) - 1
 		i = 0
 		InsertListViewItem_@MyListView p1, j, p2(i, j)
@@ -253,17 +299,31 @@ SQLite(sqlele)との連携でより使いやすくなります。
 // p5 : 区切り文字
 #deffunc local getlvitem_ int p1, int p2, array p3, int p4, str p5
 	i = -1  :  j = 0
+
 	repeat
-		sendmsg p1, LVM_GETNEXTITEM, i, 0x0002  :  i = stat
+		; i に選択したメインアイテムのインデックスが代入されます
+		; アイテムが選択されていない場合は-1が返ります
+		sendmsg p1, LVM_GETNEXTITEM, i, 0x0002
+		i = stat
 		if (i == -1) {break}
+
 		repeat p2
+			;  i = メインアイテムインデックス, cnt = サブアイテムのインデックス
+			;
 			GetListItem_@MyListView p1, i, cnt, p3(j + 1), p4
+			;
+			; メインアイテムに連なるすべてのサブアイテムを 1レコードとして配列に格納
+			;
 			p3(j) += p3(j + 1) + p5
 			p3(j + 1) = ""
+			;
 		loop
 		j++
+
 	loop
-	return j
+
+	return j        ; 選択されたアイテムの総数を戻り値としてstatに代入しています
+
 
 
 // リストビューのアイテムの文字列取得
@@ -285,21 +345,21 @@ SQLite(sqlele)との連携でより使いやすくなります。
 // リストビュー削除(内部命令)
 //
 // p1    : リストビューのオブジェクトハンドル
-// p2    : 削除するアイテム,カラムのインデックス
-// p3(0) : 削除するタイプ(0 = アイテム, 1 = カラム, 2 = アイテムの全削除)
+// p2(0) : 削除するタイプ(0 = アイテム, 1 = カラム, 2 = アイテムの全削除)
+// p3    : 削除するアイテム,カラムのインデックス
 #deffunc local dellv_ int p1, int p2, int p3
-	if      (p3 == 0) {sendmsg p1, LVM_DELETEITEM, p2, 0}
-	else:if (p3 == 1) {sendmsg p1, LVM_DELETECOLUMN, p2, 0}
-	else:if (p3 == 2) {sendmsg p1, LVM_DELETEALLITEMS, 0, 0}
-	else              {dialog "00_mylv \"MyListView\"\n func: dellv param p3", 1, "Param ERROR"}
+
+	if      (p2 == 0) {sendmsg p1, LVM_DELETEITEM,    p3, 0}
+	else:if (p2 == 1) {sendmsg p1, LVM_DELETECOLUMN,  p3, 0}
+	else:if (p2 == 2) {sendmsg p1, LVM_DELETEALLITEMS, 0, 0}
 	return stat
 
 
 // リストビュー削除
 //
 // p1    : リストビューのオブジェクトハンドル
-// p2    : 削除するアイテム,カラムのインデックス
-// p3(0) : 削除するタイプ(0 = アイテム, 1 = カラム, 2 = アイテムの全削除)
+// p2(0) : 削除するタイプ(0 = アイテム, 1 = カラム, 2 = アイテムの全削除)
+// p3    : 削除するアイテム,カラムのインデックス
 #define global dellv(%1,%2=0,%3=0) dellv_@MyListView %1,%2,%3
 
 
